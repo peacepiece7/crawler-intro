@@ -1,0 +1,78 @@
+<meta http-equiv="Content-Type" content="application/vnd.ms-excel; charset=utf-8">
+<style>
+.tdTitle{
+	background-color:#f2f2f2;
+	text-align:center;	
+	border:1px solid #D8D8D8;
+}
+.tdTitleL{
+	background-color:#f2f2f2;
+	padding-left:5px;
+	border:1px solid #D8D8D8;
+}
+	.tdTitleR{
+	background-color:#f2f2f2;
+	text-align:right;
+	padding-right:5px;
+	border:1px solid #D8D8D8;
+}
+	.tdDetail{
+	padding-left:5px;
+	border:1px solid #D8D8D8;
+}
+	.tdDetailC{
+	text-align:center;
+	border:1px solid #D8D8D8;
+}
+	.tdDetailR{
+	text-align:right;
+	padding-right:5px;
+	border:1px solid #D8D8D8;
+}
+</style>
+<div style="width:100%; height:40px;">
+<table width="100%" collpadding=0 cellspacing=0 border=0>
+		<tr>
+			<td>
+				<table width="100%" cellpadding=0 cellspacing=0 style="border:1px solid #D8D8D8;border-collapse:collapse">
+					<col width=30><col width=80><col width=70>
+<col width=17>
+<col width=17>
+<col width=17>
+<col width=17>
+<col width=17>
+<col width=17>
+<col width=17>
+<col width=17>
+<col width=17>
+<col width=17>
+<col width=17>
+<col width=17>
+<col width=17>
+<col width=17>
+<col width=17>
+<col width=17>
+<col width=17>
+<col width=17>
+<col width=17>
+<col width=17>
+<col width=17>
+<col width=17>
+<col width=17>
+<col width=17>
+<col width=17>
+<col width=17>
+<col width=17>
+<col width=17>
+<col width=17>
+<col width=17>
+					<col width=40><col width=40><col width=40><col width=40><col width=40><col width=*>
+					<tr>
+						<td align="center" colspan=39 style="height:50px; font-size:13pt;">2013년도&nbsp;&nbsp;11월분 출근부
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+</table>
+</div>

@@ -39,3 +39,6 @@ const crawler = async () => {
 };
 
 crawler();
+
+// excel write part는 회사에서 하기..
+// CSR은 js가 content를 만들어 주기 때문에, html이 텅 비어있어서 axiox + cheerio는 불가.
