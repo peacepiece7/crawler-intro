@@ -4,18 +4,19 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev:parcel-start": "parcel babel-node src/view/index.html",
-    "build:parcel-start": "parcel build src/view/index.html"
+    "start": "node src/service/main.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.22.0",
+    "cheerio": "^1.0.0-rc.10",
     "csv-parse": "^4.16.3",
     "ejs": "^3.1.6",
     "express": "^4.17.1",
     "lodash": "^4.17.21",
-    "parcel-bundler": "^1.12.5"
+    "parcel-bundler": "^1.12.5",
+    "xlsx": "^0.17.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.15.7",
