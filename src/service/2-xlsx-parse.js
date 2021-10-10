@@ -11,6 +11,7 @@ for (const name of workbook.SheetNames) {
 const ws = workbook.Sheets.커피리스트;
 
 // * 특정 범위를 파싱하기
+// 잘하는 척 하기
 ws["!ref"] = ws["!ref"]
   .split(":")
   .map((v, i) => {

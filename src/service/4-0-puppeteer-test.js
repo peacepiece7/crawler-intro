@@ -13,8 +13,14 @@ const crawler = async () => {
     });
 
     await page.goto("https://www.gsc.coffee/goods/goods_list.php?cateCd=001");
+
+    // * tag를 외부에서 정의하고 evaluate하기
+    // const tagHandler = page.$(".item_name")
+    // const text = page.evaluate((tag) => {return tage.tentContent}, tagHandler)
+    // result = [r[0], r[1], text.trim()]
+
+    // * evaluate안에서 tag를 정의하기
     const result = await page.evaluate(() => {
-      console.log("Hello, world!");
       data = [];
       [...document.querySelectorAll(".item_name")].map((el, idx) => {
         data[idx] = { name: el.textContent };

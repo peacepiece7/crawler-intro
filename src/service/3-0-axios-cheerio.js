@@ -2,12 +2,11 @@ const xlsx = require("xlsx");
 const axios = require("axios");
 const cheerio = require("cheerio");
 
-const workbook = xlsx.readFile("src/data/excel/movie_list.xlsx");
+const workbook = xlsx.readFile("src/assets/xlsx/movie_list.xlsx");
 const ws = workbook.Sheets.영화목록;
 const records = xlsx.utils.sheet_to_json(ws);
 
 // cheerio-axios조합은 간단한 페이지만 가능.
-
 const crawler = async () => {
   // * for of 문은 순서를 보장해 주지만 속도가 느림, trade off
   for (const [i, r] of records.entries()) {
