@@ -27,7 +27,7 @@ for instance
 # puppeteer
 
 - method demo
-  (try-puppeteer)[https://try-puppeteer.appspot.com/]
+  (try-puppeteer)[https://github.com/ebidel/try-puppeteer]
 
 ### headless option
 

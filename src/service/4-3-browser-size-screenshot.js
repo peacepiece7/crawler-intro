@@ -53,16 +53,45 @@ const crwaler = async () => {
             }
             return { score, imgPath };
           });
-          console.log(parsingResult);
-          result.push([r[0], r[1], parsingResult.score.trim()]);
-          const str = stringify(result);
-          fs.writeFileSync("src/assets/tmp/movie_result.csv", str);
 
-          const imgResult = await axios.get(parsingResult.imgPath.replace(/\?.*$/g, ""), {
-            responseType: "arraybuffer",
-          });
+          if (parsingResult.score) {
+            result.push([r[0], r[1], parsingResult.score.trim()]);
+            const str = stringify(result);
+            fs.writeFile("src/assets/tmp/movie_result.csv", str, (err) => {
+              if (err) throw err;
+              console.log("csv file has been saved");
+            });
+          }
 
-          fs.writeFileSync(`src/assets/tmp/poster/${r[0]}.jpg`, imgResult.data);
+          if (parsingResult.imgPath) {
+            // puppeteer는 jpg, png를 지원함
+            // clip이랑 tag의 좌표를 구해서 특정 범위만큼(캡쳐, 다운이 불가능한)을 캡쳐할 수 있음
+
+            // * page.screenshot
+            await page.screenshot({
+              path: `src/assets/tmp/screenshot/${r[0]}capture.jpg`,
+              // fullPage: true,
+              clip: {
+                x: 100,
+                y: 100,
+                width: 300,
+                height: 300,
+              },
+            });
+
+            // * fs.writeFile || fs.writeFileSync
+            const buffer = await page.screenshot();
+            fs.writeFile(`src/assets/tmp/screenshot/${r[0]}.jpg`, buffer, (err) => {
+              if (err) throw err;
+              console.log("the image file has been saved");
+            });
+
+            const imgResult = await axios.get(parsingResult.imgPath.replace(/\?.*$/g, ""), {
+              responseType: "arraybuffer",
+            });
+            fs.writeFileSync(`src/assets/tmp/poster/${r[0]}.jpg`, imgResult.data);
+          }
+
           await page.waitForTimeout(2000);
           await page.close();
         } catch (e) {
