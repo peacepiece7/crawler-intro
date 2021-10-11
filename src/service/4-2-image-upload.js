@@ -36,15 +36,28 @@ const crwaler = async () => {
           await page.goto(r[1]);
 
           const parsingResult = await page.evaluate(() => {
-            const score = document.querySelector(".score.score_left .star_score");
-            if (score) {
-              return score.textContent;
+            const scoreEl = document.querySelector(".score.score_left .star_score");
+            const imgEl = document.querySelector(".poster img");
+            let score = "";
+            if (scoreEl) {
+              score = scoreEl.textContent;
             }
+            let imgPath = "";
+            if (imgEl) {
+              imgPath = imgEl.src;
+            }
+            return { score, imgPath };
           });
-          result.push([r[0], r[1], parsingResult.trim()]);
-          console.log(result);
+          console.log(parsingResult);
+          result.push([r[0], r[1], parsingResult.score.trim()]);
           const str = stringify(result);
           fs.writeFileSync("src/assets/tmp/movie_result.csv", str);
+
+          const imgResult = await axios.get(parsingResult.imgPath.replace(/\?.*$/g, ""), {
+            responseType: "arraybuffer",
+          });
+
+          fs.writeFileSync(`src/assets/tmp/poster/${r[0]}.jpg`, imgResult.data);
           await page.waitForTimeout(2000);
           await page.close();
         } catch (e) {

@@ -147,3 +147,12 @@ axios, setUserAgent로 navigator.userAgent 변경, postman도 userAgent 변경�
 
 - 서버를 여러개 만들기, (cloud, aws.. )
 - waitFor(ms)로 ms 조절
+
+# fs.readFileSync vs fs.readFile
+
+동기로 파일을 읽어야 하는 경우 = fs.readFileSync
+
+비동기로 파일을 읽어야 하는 경우 = fs.readFile
+
+..sync method는 시작과, 끝만 사용하는게 좋음 그외 method안애서 동기로 파일을 읽으면 blocking될 수 있음.
+
