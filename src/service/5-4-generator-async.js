@@ -37,7 +37,7 @@ promise
     console.log(err);
   });
 
-// ECAM 2017 async await
+// * ECAM 2017 async await
 async function getUserData(userName, age) {
   try {
     const data = await fbDB.createData(userName, age);
