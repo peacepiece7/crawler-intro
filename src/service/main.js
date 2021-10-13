@@ -1,9 +1,8 @@
 const fs = require("fs");
+const axios = require("axios");
 const puppeteer = require("puppeteer");
 const parse = require("csv-parse/lib/sync");
 const stringify = require("csv-stringify/lib/sync");
-const axios = require("axios").default;
-import { Readable } from "stream";
 
 fs.readdir("src/coffee_assets/tmp/csv", (err) => {
   console.log("exist");
@@ -50,16 +49,21 @@ const crawler = async () => {
           return element.href;
         });
 
-        // parse name tag
+        //? if sold out
+        // const soldOutEl = document.querySelectorAll(".item_photo_box .item_soldout_bg")
+
+        // parse thumnail
+        //? forEach사용해보기
         const names = [...document.querySelectorAll(".item_tit_box .item_name")].map((element) => {
           return element.textContent;
         });
 
-        // parse price tag
+        // parse price
         const prices = [...document.querySelectorAll(".item_money_box .item_price span")].map((element) => {
           return element.textContent;
         });
 
+        // parse image path
         const imgPath = [...document.querySelectorAll(".item_cont .item_photo_box a img")].map((element) => {
           return element.currentSrc;
         });
