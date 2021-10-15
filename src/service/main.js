@@ -15,7 +15,6 @@ fs.readdir("src/coffee_assets/tmp/csv", (err) => {
 fs.readdir("src/coffee_assets/tmp/image", (err) => {
   console.log("exist");
   if (err) {
-    123;
     console.error(err);
     console.log("디렉터리가 생성 되었습니다.");
     fs.mkdirSync("src/coffee_assets/tmp/image");
