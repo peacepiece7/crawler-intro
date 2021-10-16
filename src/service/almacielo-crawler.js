@@ -37,8 +37,8 @@ const crawler = async (siteName) => {
       let pageIdx = 1;
       let check = true;
       do {
-        await page.waitForSelector("body");
-        await page.waitForTimeout(1000);
+        await page.waitForSelector(".pagination ul");
+        await page.waitForTimeout(500);
         check = await page.evaluate(() => {
           const contEl = document.querySelectorAll(".item_cont .item_photo_box");
           if (contEl.length) {
@@ -112,11 +112,4 @@ const crawler = async (siteName) => {
   }
 };
 
-crawler("gsc");
-
-// SOCKS5 = Deep web browser header
-// HIA = High Annonimity
-// NOA = Not of Annonimity
-
-// https://spys.one/en/free-proxy-list/
-// postman으로 보냈을 떄, 페이지 정보가 잘 나오면 크롤링하기 쉬운 사이트
+crawler("almacielo");

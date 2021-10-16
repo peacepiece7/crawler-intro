@@ -1,0 +1,6 @@
+{
+  "verbose": true,
+  "ignore": ["*.test.js", "fixtures/*", "tmp/*"],
+  "exec": "babel-node src/serivce/gsc-crawler.js",
+  "delay" : 2500
+}
