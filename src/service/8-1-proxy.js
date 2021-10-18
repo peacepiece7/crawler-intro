@@ -48,7 +48,7 @@ const cralwer = async () => {
     await page.close();
     await browser.close();
     console.log(filtered[0].ip);
-    browser = await puppeteer.launch({ headless: false, args: ["--window-size:1280,1280", `--proxy-server=http://${filtered[0].ip}`] });
+    browser = await puppeteer.launch({ headless: false, args: ["--window-size:1280,1280", "--ignore-certificate-errors"`--proxy-server=http://${filtered[0].ip}`] });
     page = await browser.newPage();
     await page.goto("http://www.whatismyproxy.com/");
   } catch (err) {
