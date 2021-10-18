@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node src/service/main.js"
+    "start": "node src/service/main.js",
+    "dev:start": "nodemon",
+    "build": "babel src -d lib"
   },
   "author": "",
   "license": "ISC",
@@ -24,9 +26,10 @@
   },
   "devDependencies": {
     "@babel/cli": "^7.15.7",
-    "@babel/core": "^7.15.5",
+    "@babel/core": "^7.15.8",
     "@babel/node": "^7.15.4",
     "@babel/preset-env": "^7.15.6",
-    "babel-loader": "^8.2.2"
+    "babel-loader": "^8.2.2",
+    "nodemon": "^2.0.13"
   }
 }
