@@ -14,16 +14,18 @@ const crawler = async (provider) => {
     // * provider 검색
     await page.goto("http://115.22.68.60/master/uphtml_sub_all.jsp");
     await page.waitForSelector("select");
-    await page.waitForTimeout(888);
+    await page.waitForTimeout(Math.floor(Math.random() * 1000));
 
     let bool = true;
     while (bool) {
       await page.type("select", provider);
-      await page.waitForTimeout(2000);
+      await page.waitForTimeout(Math.floor(Math.random() * 1000));
+
       await page.click("input[name=cc]");
+      await page.waitForTimeout(Math.floor(Math.random() * 1000));
 
       await page.waitForSelector("select");
-      await page.waitForTimeout(1244);
+      await page.waitForTimeout(Math.floor(Math.random() * 1000));
 
       // * Detail Icon Click
       await page.evaluate(() => {
@@ -36,7 +38,7 @@ const crawler = async (provider) => {
           });
       });
 
-      await page.waitForTimeout(2000);
+      await page.waitForTimeout(Math.floor(Math.random() * 8000));
 
       const partNumber = await page.evaluate(() => {
         return document.querySelector("tr td:nth-child(1) > a").textContent;
@@ -46,9 +48,16 @@ const crawler = async (provider) => {
         const text = `C:\\Users\\INTERBIRD\\Desktop\\tar\\${partNumber}.tgz`;
         const input = await page.$("input[type=file]");
         await input.uploadFile(text);
+        await page.waitForTimeout(Math.floor(Math.random() * 1000));
+
         await page.keyboard.down("Control");
+        await page.waitForTimeout(Math.floor(Math.random() * 1000));
+
         await page.click("input[name=B1]");
+        await page.waitForTimeout(Math.floor(Math.random() * 1000));
+
         await page.keyboard.up("Control");
+        await page.waitForTimeout(Math.floor(Math.random() * 1000));
       } else {
         bool = false;
       }
@@ -58,4 +67,4 @@ const crawler = async (provider) => {
   }
 };
 
-crawler("weidmuller");
+crawler("harting");
