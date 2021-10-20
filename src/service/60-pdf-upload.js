@@ -1,7 +1,6 @@
 const dotenv = require("dotenv");
 dotenv.config();
 const puppeteer = require("puppeteer");
-const { installMouseHelper } = require("./install-mouse-helper");
 const fs = require("fs");
 
 const crawler = async (siteName) => {
@@ -35,14 +34,11 @@ const crawler = async (siteName) => {
         }
       });
 
-    // * installs the helper to the page. Mouse will be visible in the subsequent navigation.
-    await installMouseHelper(page);
-
     // Login
     await page.goto("http://34.64.149.214/master/login.jsp");
     await page.waitForSelector("input[name=id]");
     await page.type("input[name=id]", process.env.NEW_ALLDATASHEET_ID);
-    await page.type("input[name=pwd]", process.env.NEW_ALLDATASHEET_PASSWORD);
+    await page.type("input[name=pwd]", process.env.new_ALLDATASHEET_PASSWORD);
     await page.waitForTimeout(1000);
     await page.click("input[type=submit]");
 
@@ -67,6 +63,14 @@ const crawler = async (siteName) => {
         const imageFile = await page.$("input[name=img]");
         imageFile.uploadFile(imgPath);
         await page.waitForTimeout(Math.floor(Math.random() * 1000));
+
+        await page.keyboard.down("Control");
+        await page.waitForTimeout(Math.floor(Math.random() * 1000));
+        await page.click("input[value=등록하기]");
+        await page.waitForTimeout(Math.floor(Math.random() * 1000));
+        await page.keyboard.up("Control");
+
+        await page.waitForTimeout(Math.floor(Math.random() * 5000));
       } catch (e) {
         console.log(e);
       }
@@ -77,6 +81,3 @@ const crawler = async (siteName) => {
 };
 
 crawler("WAGO Kontakttechnik GmbH & Co. KG [WAGO]^1452");
-
-// WAGO Kontakttechnik GmbH & Co. KG [WAGO]^1452
-// HARTING Technology Group [HARTING]^1414
