@@ -48,16 +48,16 @@ const crawler = async (provider) => {
         const text = `C:\\Users\\INTERBIRD\\Desktop\\tar\\${partNumber}.tgz`;
         const input = await page.$("input[type=file]");
         await input.uploadFile(text);
-        await page.waitForTimeout(Math.floor(Math.random() * 1000));
+        await page.waitForTimeout(1000);
 
         await page.keyboard.down("Control");
-        await page.waitForTimeout(Math.floor(Math.random() * 1000));
+        await page.waitForTimeout(1000);
 
         await page.click("input[name=B1]");
-        await page.waitForTimeout(Math.floor(Math.random() * 1000));
-
+        await page.waitForTimeout(1000);
+        s;
         await page.keyboard.up("Control");
-        await page.waitForTimeout(Math.floor(Math.random() * 1000));
+        await page.waitForTimeout(1000);
       } else {
         bool = false;
       }
