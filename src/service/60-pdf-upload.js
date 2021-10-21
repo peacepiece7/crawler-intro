@@ -10,11 +10,15 @@ const crawler = async (siteName) => {
   const pdfFiles = input.split(",").filter((file) => {
     if (file.includes(".pdf")) {
       return file;
+    } else if (file.includes(".PDF")) {
+      return file;
     }
   });
 
   const imgFiles = input.split(",").filter((file) => {
-    if (file.includes(".GIF")) {
+    if (file.includes(".gif")) {
+      return file;
+    } else if (file.includes(".GIF")) {
       return file;
     }
   });

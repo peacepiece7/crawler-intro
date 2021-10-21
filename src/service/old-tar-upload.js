@@ -55,7 +55,6 @@ const crawler = async (provider) => {
 
         await page.click("input[name=B1]");
         await page.waitForTimeout(1000);
-        s;
         await page.keyboard.up("Control");
         await page.waitForTimeout(1000);
       } else {
@@ -67,4 +66,4 @@ const crawler = async (provider) => {
   }
 };
 
-crawler("harting");
+crawler("wago");
