@@ -66,4 +66,4 @@ const crawler = async (provider) => {
   }
 };
 
-crawler("wago");
+crawler("harting");
