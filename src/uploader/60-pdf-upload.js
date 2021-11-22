@@ -89,7 +89,7 @@ const crawler = async (siteName) => {
 };
 
 // * 제조사 풀 네임을 여기에 입력
-crawler("Weidmuller [WEIDMULLER]^786");
+crawler("WAGO Kontakttechnik GmbH & Co. KG [WAGO]^1451");
 
 // WAGO Kontakttechnik GmbH & Co. KG [WAGO]^1451
 // HARTING Technology Group [HARTING]^1414
