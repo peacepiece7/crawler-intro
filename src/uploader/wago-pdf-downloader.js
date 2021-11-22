@@ -10,14 +10,15 @@ const crawler = async () => {
     await browser.userAgent(
       "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36"
     );
-    const page = await browser.newPage();
-    await page.setViewport({ width: 1420, height: 1420 });
+
     const baseUrl = "https://www.wago.com/global/c/system-wiring";
     let isExist = true;
-    let count = 3;
+    let count = 9;
     while (isExist) {
+      let page = await browser.newPage();
+      await page.setViewport({ width: 1420, height: 1420 });
       await page.goto(`${baseUrl}?page=${count}`);
-      await page.waitForNetworkIdle({ idleTime: 2000 });
+      await page.waitForTimeout(5000);
       const contents = await page.evaluate(() => {
         const content = document.querySelectorAll(".wg-listitem-neo.wg-listitem-neo--compact.wg-listitem-neo--product");
         if (content.length >= 1) {
@@ -37,7 +38,7 @@ const crawler = async () => {
         });
         console.log("다운로드 링크 개수 : ", downloadLinks.length);
         for (let i = 0; i < downloadLinks.length; i++) {
-          const page = await browser.newPage();
+          page = await browser.newPage();
           await page.goto(downloadLinks[i]);
           await page.waitForNetworkIdle({ idleTime: 2000 });
           const popup = await page.$(".wg-button-bar--align-right button:last-child");
@@ -51,7 +52,7 @@ const crawler = async () => {
           await page.waitForTimeout(Math.floor(Math.random(2000)) + 10000);
           await page.click(".wg-modal__content .wg-modal__footer .wg-button--primary");
           await page.waitForNetworkIdle({ idleTime: 1000 });
-          await page.close();
+          page.close();
         }
         console.log(`${count}page is done`);
         count += 1;

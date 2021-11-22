@@ -63,9 +63,7 @@ const crawler = async (siteName) => {
         await page.waitForTimeout(1000);
 
         const partNumber = await page.evaluate(() => {
-          const fileName = document.querySelector(
-            "body > center table tbody tr:nth-child(2) td"
-          ).textContent;
+          const fileName = document.querySelector("body > center table tbody tr:nth-child(2) td").textContent;
           return fileName;
         });
 
@@ -87,10 +85,8 @@ const crawler = async (siteName) => {
 };
 
 // * 제조사 풀 네임을 여기에 입력
+crawler("HARTING Technology Group [HARTING]^HARTING");
+
 // Weidmuller [WEIDMULLER]^Weidmuller
 // WAGO Kontakttechnik GmbH & Co. KG [WAGO]^WAGO
 // HARTING Technology Group [HARTING]^HARTING
-
-// crawler("Weidmuller [WEIDMULLER]^Weidmuller");
-crawler("WAGO Kontakttechnik GmbH & Co. KG [WAGO]^WAGO");
-// crawler("HARTING Technology Group [HARTING]^HARTING");
