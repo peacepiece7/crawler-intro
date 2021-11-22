@@ -5,18 +5,24 @@ const fs = require("fs");
 
 // * 각 컴퓨터 마다 path 수정
 const crawler = async (siteName) => {
-  const input = fs.readdirSync("C:\\Users\\INTERBIRD\\Desktop\\tar").toString();
+  const FilePath = __dirname.split("crawler-intro")[0] + "tar";
+  const input = fs.readdirSync(FilePath).toString();
 
   const tarFiles = input.split(",").filter((file) => {
-    if (file.includes(".tgz")) {
+    if (file.includes(".tgz") || file.includes(".TGZ")) {
       return file;
     }
   });
   try {
-    const browser = await puppeteer.launch({ headless: false, args: ["--window-size:1400,1400"] });
+    const browser = await puppeteer.launch({
+      headless: false,
+      args: ["--window-size:1400,1400"],
+    });
 
     // * 각 컴퓨터 마다 navigator.userAgent 확인 후 수정
-    await browser.userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36");
+    await browser.userAgent(
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36"
+    );
 
     let page = await browser.newPage();
     await page.setViewport({
@@ -40,13 +46,12 @@ const crawler = async (siteName) => {
     await page.type("input[name=id]", process.env.NEW_ALLDATASHEET_ID);
     await page.type("input[name=pwd]", process.env.new_ALLDATASHEET_PASSWORD);
     await page.waitForTimeout(1000);
-    await page.waitForTimeout(Math.floor(Math.random() * 4000));
 
     await page.click("input[type=submit]");
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(Math.floor(Math.random() * 3000 + 2000));
 
     // Go to tar upload page
-    for (let i = 0; i <= tarFiles.length; i++) {
+    for (let i = 0; i < tarFiles.length; i++) {
       try {
         page = await browser.newPage();
         await page.goto("http://34.64.149.214/master/uphtml_sub_all.jsp");
@@ -58,30 +63,34 @@ const crawler = async (siteName) => {
         await page.waitForTimeout(1000);
 
         const partNumber = await page.evaluate(() => {
-          const fileName = document.querySelector("body > center table tbody tr:nth-child(2) td").textContent;
+          const fileName = document.querySelector(
+            "body > center table tbody tr:nth-child(2) td"
+          ).textContent;
           return fileName;
         });
 
-        const text = `C:\\Users\\INTERBIRD\\Desktop\\tar\\${partNumber}.tgz`;
+        const text = `${FilePath}\\${partNumber}.tgz`;
         const inputElement = await page.$("input[type=file]");
         await inputElement.uploadFile(text);
-        await page.waitForTimeout(Math.floor(Math.random() * 10000));
-        await page.waitForTimeout(10000);
+        await page.waitForTimeout(1000);
 
         await page.click("input[name=B1]");
-        await page.waitForTimeout(Math.floor(Math.random() * 10000));
+        await page.waitForTimeout(Math.floor(Math.random() * 10000 + 5000));
       } catch (e) {
         console.log(e);
       }
     }
-    await page.waitForTimeout(30000);
-    alert("30초 후 종료");
-    await page.close();
-    await browser.close();
   } catch (e) {
     console.log(e);
   }
+  console.log("@@@@@@@@@@@@@@@@@@ TAR UPLOAD DONE @@@@@@@@@@@@@@@@@@");
 };
 
 // * 제조사 풀 네임을 여기에 입력
+// Weidmuller [WEIDMULLER]^Weidmuller
+// WAGO Kontakttechnik GmbH & Co. KG [WAGO]^WAGO
+// HARTING Technology Group [HARTING]^HARTING
+
+// crawler("Weidmuller [WEIDMULLER]^Weidmuller");
 crawler("WAGO Kontakttechnik GmbH & Co. KG [WAGO]^WAGO");
+// crawler("HARTING Technology Group [HARTING]^HARTING");
