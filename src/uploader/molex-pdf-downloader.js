@@ -1,7 +1,13 @@
+// https://www.molex.com/molex/search/partSearchPage?isseriesPagination=yes&itemListRe=&itemList=&pQuery=q%253D*%253A*%2540fq%253Dcollection%253Aimpulse%2540fq%253Dcategory%253A%2522Antennas%2522%2540fq%253Dtype%253A*Wi-Fi*%2540fq%253D&offset=20&currentQuery=
+// `https://www.molex.com/molex/search/partSearchPage?isseriesPagination=yes&itemListRe=&itemList=&pQuery=q%253D*%253A*%2540fq%253Dcollection%253Aimpulse%2540fq%253Dcategory%253A%2522Antennas%2522%2540fq%253Dtype%253A*Wi-Fi*%2540fq%253D&currentQuery=&offset=${offsetNumber}`
+
 const puppeteer = require("puppeteer");
-//? this.page로 page를 공유할 수 있나?
+const axios = require("axios");
+const fs = require("fs");
+const { QueryHandler } = require("query-selector-shadow-dom/plugins/puppeteer");
 const crawler = async () => {
   try {
+    await puppeteer.__experimental_registerCustomQueryHandler("shadow", QueryHandler);
     const browser = await puppeteer.launch({
       headless: false,
       args: ["--disable-notifications"],
@@ -11,16 +17,17 @@ const crawler = async () => {
       "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36"
     );
 
-    const baseUrl = "https://www.wago.com/global/c/rail-mount-terminal-blocks";
+    const baseUrl =
+      "https://www.molex.com/molex/search/deepSearch?pQuery=category%253A%2522Antennas%2522%2540type%253A*Wi-Fi*";
     let isExist = true;
-    let count = 6;
+    let offsetNumber = 0;
     while (isExist) {
       let page = await browser.newPage();
       await page.setViewport({ width: 1420, height: 1420 });
-      await page.goto(`${baseUrl}?page=${count}`);
+      await page.goto(`${baseUrl}&offset=${offsetNumber}`);
       await page.waitForTimeout(5000);
       const contents = await page.evaluate(() => {
-        const content = document.querySelectorAll(".wg-listitem-neo.wg-listitem-neo--compact.wg-listitem-neo--product");
+        const content = document.querySelectorAll(".part-desc h3 a");
         if (content.length >= 1) {
           return true;
         } else {
@@ -31,9 +38,7 @@ const crawler = async () => {
       if (contents) {
         await page.waitForTimeout(1000);
         const downloadLinks = await page.evaluate(() => {
-          const links = Array.from(document.querySelectorAll(".wg-listitem-neo__marginal-column-entry a")).map(
-            (v) => v.href
-          );
+          const links = Array.from(document.querySelectorAll(".part-desc h3 a")).map((v) => v.href);
           return links;
         });
         console.log("다운로드 링크 개수 : ", downloadLinks.length);
@@ -44,12 +49,15 @@ const crawler = async () => {
           const popup = await page.$(".wg-button-bar--align-right button:last-child");
           popup && (await page.click(".wg-button-bar--align-right button:last-child"));
           await page.waitForTimeout(2000);
-          await page.evaluate(() => {
-            const downloadLink = document.querySelector(".js-datasheet-download.wg-product-actionbtn");
-            downloadLink.click();
+          const downloadLink = await page.evaluate(() => {
+            return document.querySelector(".noline").href;
           });
+          console.log("DOWNLOAD LINK :", downloadLink);
           await page.waitForTimeout(Math.floor(Math.random(2000)) + 5000);
-          await page.click(".wg-modal__content .wg-modal__footer .wg-button--primary");
+
+          await page.goto(downloadLink);
+
+          await page.waitForNetworkIdle({ idleTime: 1000 });
           await page.waitForNetworkIdle({ idleTime: 1000 });
           page.close();
         }

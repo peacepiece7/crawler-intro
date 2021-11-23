@@ -22,6 +22,7 @@
     "lodash": "^4.17.21",
     "parcel-bundler": "^1.12.5",
     "puppeteer": "^11.0.0",
+    "query-selector-shadow-dom": "^1.0.0",
     "xlsx": "^0.17.2"
   },
   "devDependencies": {

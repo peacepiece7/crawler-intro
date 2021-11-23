@@ -20,7 +20,7 @@ const crawler = async (siteName) => {
   });
   try {
     const browser = await puppeteer.launch({
-      headless: false,
+      headless: true,
       args: ["--window-size:1400,1400"],
     });
 
@@ -64,7 +64,6 @@ const crawler = async (siteName) => {
         await page.waitForTimeout(1000);
 
         const pdfName = pdfFiles[i].toString().slice(0, pdfFiles[i].length - 4);
-
         await page.waitForTimeout(1000);
         await page.type("input[name=info]", pdfName);
         await page.type(`input[name=sFactory]`, siteName);
@@ -75,8 +74,8 @@ const crawler = async (siteName) => {
         const imageFile = await page.$("input[name=img]");
         imageFile.uploadFile(imgPath);
         await page.waitForTimeout(Math.floor(Math.random() * 10000 + 2000));
-
         await page.click("input[value=등록하기]");
+        console.log("UPLOADED PAR NUMBER IS", pdfName);
         await page.waitForTimeout(5000);
       } catch (e) {
         console.log(e);
@@ -85,11 +84,11 @@ const crawler = async (siteName) => {
   } catch (e) {
     console.log(e);
   }
-  console.log("@@@@@@@@@@@@@@@@@@@@@ PDF UPLOAD DONE! @@@@@@@@@@@@@@@@@@@@@");
+  console.log("@@@@@@@@@@@@@@@@@@@@@ PDF UPLOAD DONE @@@@@@@@@@@@@@@@@@@@@");
 };
 
 // * 제조사 풀 네임을 여기에 입력
-crawler("WAGO Kontakttechnik GmbH & Co. KG [WAGO]^1451");
+crawler("HARTING Technology Group [HARTING]^1414");
 
 // WAGO Kontakttechnik GmbH & Co. KG [WAGO]^1451
 // HARTING Technology Group [HARTING]^1414
