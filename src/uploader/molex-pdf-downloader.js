@@ -38,9 +38,7 @@ const crawler = async () => {
       if (contents) {
         await page.waitForTimeout(1000);
         const downloadLinks = await page.evaluate(() => {
-          const links = Array.from(
-            document.querySelectorAll('.part-desc h3 a')
-          ).map((v) => v.href);
+          const links = Array.from(document.querySelectorAll('.part-desc h3 a')).map((v) => v.href);
           return links;
         });
         console.log('다운로드 링크 개수 : ', downloadLinks.length);
@@ -53,13 +51,12 @@ const crawler = async () => {
             return link;
           });
           const pdfName = await page.evaluate(() => {
-            const name = document
-              .querySelector('.part-number h1')
-              .textContent.split(':')[1];
+            const name = document.querySelector('.part-number h1').textContent.split(':')[1];
             return name;
           });
-          if (!pdfLink) {
-            console.log('PDF 링크가 존재하지 않습니다.');
+          if (!pdfLink || !pdfName) {
+            console.log('PDF 링크가 존재하지 않거나 partnumber를 찾을 수 없습니다.');
+            console.log(downloadLinks[i]);
           } else {
             axios({
               method: 'get',
@@ -67,12 +64,7 @@ const crawler = async () => {
               responseType: 'arraybuffer',
             })
               .then((res) => {
-                if (!pdfName) {
-                  // prettier-ignore
-                  fs.writeFileSync(`${__dirname}/${Date.now()}이름없음.pdf`, res.data);
-                } else {
-                  fs.writeFileSync(`${__dirname}/${pdfName}.pdf`, res.data);
-                }
+                fs.writeFileSync(`${__dirname}/${pdfName}.pdf`, res.data);
               })
               .catch((err) => {
                 console.log('check the axios');
