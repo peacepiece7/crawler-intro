@@ -61,7 +61,7 @@ const crawler = async (siteName) => {
         const fileName = document.querySelector("body > center table tbody tr:nth-child(2) td").textContent;
         return fileName;
       });
-      console.log("UPLOADED PART NUMBER :", partNumber);
+      console.log("Uploaded part number :", pdfName);
       if (partNumber) {
         const text = `${FilePath}\\${partNumber}.tgz`;
         const inputElement = await page.$("input[type=file]");
@@ -75,9 +75,14 @@ const crawler = async (siteName) => {
       }
     }
   } catch (e) {
+    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+    console.log("@@@@@@@@@@@@@@@@@@@@     ERROR     @@@@@@@@@@@@@@@@@@@@");
+    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
     console.log(e);
   }
+  console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
   console.log("@@@@@@@@@@@@@@@@@@ TAR UPLOAD DONE @@@@@@@@@@@@@@@@@@");
+  console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 };
 
 // * 제조사 풀 네임을 여기에 입력

@@ -75,16 +75,21 @@ const crawler = async (siteName) => {
         imageFile.uploadFile(imgPath);
         await page.waitForTimeout(Math.floor(Math.random() * 10000 + 2000));
         await page.click("input[value=등록하기]");
-        console.log("UPLOADED PAR NUMBER IS", pdfName);
+        console.log("Uploaded part number :", pdfName);
         await page.waitForTimeout(5000);
       } catch (e) {
         console.log(e);
       }
     }
   } catch (e) {
+    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+    console.log("@@@@@@@@@@@@@@@@@@@@     ERROR     @@@@@@@@@@@@@@@@@@@@");
+    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
     console.log(e);
   }
+  console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
   console.log("@@@@@@@@@@@@@@@@@@@@@ PDF UPLOAD DONE @@@@@@@@@@@@@@@@@@@@@");
+  console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 };
 
 // * 제조사 풀 네임을 여기에 입력

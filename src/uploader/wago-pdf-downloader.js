@@ -36,7 +36,7 @@ const crawler = async () => {
           );
           return links;
         });
-        console.log("다운로드 링크 개수 : ", downloadLinks.length);
+        console.log(`Found ${downloadLinks.length} links, start downloading`);
         for (let i = 0; i < downloadLinks.length; i++) {
           page = await browser.newPage();
           await page.goto(downloadLinks[i]);
@@ -53,17 +53,21 @@ const crawler = async () => {
           await page.waitForNetworkIdle({ idleTime: 1000 });
           page.close();
         }
-        console.log(`${count}page is done`);
+        console.log(`${count} page is done`);
         count += 1;
       } else {
         isExist = false;
       }
     }
   } catch (err) {
-    console.log("@@@@ error @@@@");
+    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+    console.log("@@@@@@@@@@@@@@@@@@@@     ERROR     @@@@@@@@@@@@@@@@@@@@");
+    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
     console.log(err);
   }
+  console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
   console.log("@@@@@@@@@@@@@@@@@@@@ DOWNLOAD DONE @@@@@@@@@@@@@@@@@@@@");
+  console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 };
 
 crawler();
