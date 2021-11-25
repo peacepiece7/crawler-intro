@@ -6,11 +6,10 @@ const fs = require("fs");
 // * 각 컴퓨터 마다 path 수정
 const crawler = async (siteName) => {
   const FilePath = __dirname.split("crawler-intro")[0] + "tar";
-  const input = fs.readdirSync(FilePath).toString();
 
   try {
     const browser = await puppeteer.launch({
-      headless: true,
+      headless: false,
       args: ["--window-size:1400,1400"],
     });
 
@@ -61,7 +60,7 @@ const crawler = async (siteName) => {
         const fileName = document.querySelector("body > center table tbody tr:nth-child(2) td").textContent;
         return fileName;
       });
-      console.log("Uploaded part number :", pdfName);
+      console.log("Uploaded part number :", partNumber);
       if (partNumber) {
         const text = `${FilePath}\\${partNumber}.tgz`;
         const inputElement = await page.$("input[type=file]");
@@ -69,7 +68,8 @@ const crawler = async (siteName) => {
         await page.waitForTimeout(1000);
 
         await page.click("input[name=B1]");
-        await page.waitForTimeout(Math.floor(Math.random() * 10000 + 5000));
+        await page.waitForNetworkIdle();
+        await page.waitForTimeout(Math.floor(Math.random() * 1000 + 5000));
       } else {
         check = false;
       }

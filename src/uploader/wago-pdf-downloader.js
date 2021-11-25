@@ -13,7 +13,7 @@ const crawler = async () => {
 
     const baseUrl = "https://www.wago.com/global/c/rail-mount-terminal-blocks";
     let isExist = true;
-    let count = 6;
+    let count = 147;
     while (isExist) {
       let page = await browser.newPage();
       await page.setViewport({ width: 1420, height: 1420 });
@@ -40,7 +40,8 @@ const crawler = async () => {
         for (let i = 0; i < downloadLinks.length; i++) {
           page = await browser.newPage();
           await page.goto(downloadLinks[i]);
-          await page.waitForNetworkIdle({ idleTime: 2000 });
+          await page.waitForNetworkIdle();
+
           const popup = await page.$(".wg-button-bar--align-right button:last-child");
           popup && (await page.click(".wg-button-bar--align-right button:last-child"));
           await page.waitForTimeout(2000);
@@ -48,9 +49,25 @@ const crawler = async () => {
             const downloadLink = document.querySelector(".js-datasheet-download.wg-product-actionbtn");
             downloadLink.click();
           });
-          await page.waitForTimeout(Math.floor(Math.random(2000)) + 5000);
-          await page.click(".wg-modal__content .wg-modal__footer .wg-button--primary");
-          await page.waitForNetworkIdle({ idleTime: 1000 });
+
+          await page.waitForTimeout(Math.floor(Math.random() * 2000) + 4000);
+
+          // await page.click(".wg-modal__content .wg-modal__footer .wg-button--primary");
+          const clickedLink = await page.evaluate(() => {
+            const link = document.querySelector(".wg-modal__content .wg-modal__footer .wg-button--primary");
+            if (link) {
+              link.click();
+              return true;
+            } else {
+              return false;
+            }
+          });
+          if (!clickedLink) {
+            console.log("Error : 링크가 존제하지 않습니다. 아래 주소를 확인해주세요");
+            console.log(downloadLinks[i]);
+          }
+          await page.waitForNetworkIdle();
+          await page.waitForTimeout(1000);
           page.close();
         }
         console.log(`${count} page is done`);
@@ -71,3 +88,6 @@ const crawler = async () => {
 };
 
 crawler();
+
+// 2x~33까지 다운 잘 됐는지 모르겠음..
+// 67까지 받음

@@ -81,4 +81,4 @@ const crawler = async (provider) => {
 
 // 검색할 내용을 입력하세요
 
-crawler("harting");
+crawler("wago");
