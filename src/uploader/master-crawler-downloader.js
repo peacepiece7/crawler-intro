@@ -3,7 +3,8 @@ const fs = require("fs");
 const path = require("path");
 const dotenv = require("dotenv");
 const { installMouseHelper } = require("../service/install-mouse-helper");
-const { forEach } = require("lodash");
+const axios = require("axios");
+
 dotenv.config();
 
 const dir = path.join(__dirname, "..", "..", "..", "master-crawler");
@@ -49,21 +50,69 @@ const crawler = async () => {
     await page.mouse.move(210, 85);
     await page.waitForTimeout(1000);
     await page.mouse.click(210, 85);
-
     await page.waitForTimeout(2000);
+    console.log("미우스 헬퍼 끝");
 
-    console.log("제조사 리스트 생성");
-    // "/"잘라내야 함
+    console.log("제조사 리스트 생성 시작");
     const manufactureList = await parseManufactureList(page);
-    console.log(manufactureList);
-    // manufactureList.forEach((e) => {
-    //   const manufactureDir = `${dir}/${e}`;
-    //   fs.readdir(manufactureDir, null, (isExist) => {
-    //     if (isExist) {
-    //       fs.mkdirSync(manufactureDir);
-    //     }
-    //   });
-    // });
+    const filteredManufactureList = manufactureList.filter((val, idx) => manufactureList.indexOf(val) === idx);
+    console.log(filteredManufactureList);
+    filteredManufactureList.forEach((e) => {
+      const manufactureDir = `${dir}/${e}`;
+      fs.readdir(manufactureDir, null, (error) => {
+        if (error) {
+          return fs.mkdirSync(manufactureDir);
+        }
+      });
+    });
+    console.log("제조사 리스트 생성 끝");
+    console.log("pdf parse 시작");
+    const pdfs = await page.evaluate(() => {
+      const result = [];
+      Array.from(document.querySelectorAll("tbody tr")).map((v, idx) => {
+        // pdf link
+        const link = v.querySelector("td:nth-child(5) a").href;
+
+        // part number
+        const pn = v.querySelector(".pname").textContent;
+
+        // manufacture
+        let mf = v.querySelector("#mfr").textContent.split("/");
+        if (mf[1]) {
+          mf = `${mf[0].trim()} ${mf[1].trim()}`;
+        } else {
+          mf = mf[0];
+        }
+        result.push({ mf: mf, pn: pn, link: link });
+      });
+      return result;
+    });
+    console.log(pdfs);
+
+    pdfs.map((v, idx) => {
+      setTimeout(() => {
+        if (v.link.includes(".pdf") || v.link.includes(".PDF")) {
+          axios({
+            method: "GET",
+            url: v.link,
+            responseType: "arraybuffer",
+          })
+            .then((res) => {
+              console.log(`download pn : ${v.pn}, index : ${idx}, last index : ${pdfs.length - 1}`);
+              fs.writeFileSync(`${dir}/${v.mf}/${v.pn}.pdf`, res.data);
+            })
+            .catch((err) => {
+              console.log("@@ ERROR @@");
+              console.log(v.pn);
+              console.log(err);
+            });
+        } else {
+          fs.writeFileSync(`${dir}/${v.mf}/${v.pn}.txt`, "");
+        }
+      }, 300 * idx);
+    });
+    await page.close();
+    await browser.close();
   } catch (error) {
     console.log(error);
   }
@@ -73,29 +122,20 @@ crawler();
 
 // promise로 manufacture directory 비동기 생성
 // err가 생성되면 바로 종료되어버림..
-function makeManufactureDirectory(mfDir) {
-  return new Promise((resolve, reject) => {
-    const manufactureDir = `${dir}/${mfDir}`;
-    fs.readdir(manufactureDir, null, (err) => {
-      if (err) {
-        fs.mkdirSync(manufactureDir);
-        return resolve(`${mfDir} 생성`);
-      }
-      resolve(`${mfDir}가 이미 존재합니다.`);
-    });
-  });
-}
 
 async function parseManufactureList(page) {
   const list = await page.evaluate(() => {
-    const name = Array.from(document.querySelectorAll("#mfr")).map((v, i) => {
-      if (v.textContent) {
-        return v.textContent;
-      }
-      return `ERROR INDEX ${i}`;
+    const name = Array.from(document.querySelectorAll("#mfr")).map((v) => {
+      return v.textContent && v.textContent;
     });
-    return name;
+    const result = name.map((v) => {
+      const mf = v.split("/");
+      if (!mf[1]) {
+        return mf[0];
+      }
+      return `${mf[0].trim()} ${mf[1].trim()}`;
+    });
+    return result;
   });
-
   return list;
 }
