@@ -17,7 +17,7 @@ fs.readdir(dir, null, (err) => {
   }
 });
 
-const crawler = async () => {
+const crawler = async (query) => {
   try {
     const browser = await puppeteer.launch({
       headless: false,
@@ -44,7 +44,7 @@ const crawler = async () => {
         console.log("dialog error");
       }
     });
-    await page.goto("http://115.22.68.60/master/crawl/index.jsp?pre=1", { waitUntil: "networkidle0" });
+    await page.goto(`http://115.22.68.60/master/crawl/index.jsp?pre=${query}`, { waitUntil: "networkidle0" });
 
     console.log("미우스 헬퍼 시작");
     await page.mouse.move(210, 85);
@@ -56,7 +56,7 @@ const crawler = async () => {
     console.log("제조사 리스트 생성 시작");
     const manufactureList = await parseManufactureList(page);
     const filteredManufactureList = manufactureList.filter((val, idx) => manufactureList.indexOf(val) === idx);
-    console.log(filteredManufactureList);
+
     filteredManufactureList.forEach((e) => {
       const manufactureDir = `${dir}/${e}`;
       fs.readdir(manufactureDir, null, (error) => {
@@ -87,41 +87,69 @@ const crawler = async () => {
       });
       return result;
     });
-    console.log(pdfs);
+    console.log("pdf parse 끝");
+    // alldatasheet에 검색 -> 일치하는 파트넘버가 있을 경우 다운로드하지만 확인을 요한다는 표시를 추가함
+    // https://www.alldatasheet.net/view.jsp?Searchword=A123
+    // 파트넘버 A123가 존재할 경우 경우 확인이필요합니다A123.pdf 이런 식으로 저장
 
-    pdfs.map((v, idx) => {
-      setTimeout(() => {
-        if (v.link.includes(".pdf") || v.link.includes(".PDF")) {
-          axios({
-            method: "GET",
-            url: v.link,
-            responseType: "arraybuffer",
-          })
-            .then((res) => {
-              console.log(`download pn : ${v.pn}, index : ${idx}, last index : ${pdfs.length - 1}`);
+    // .txt로 저장된 파일의 경우 안에 들어있는 주소로 들어가서 확인 후 master-crawler에서 해당 파트넘버 제외하기
+    console.log("pdf compare & save 시작");
+    for (const v of pdfs) {
+      const idx = pdfs.indexOf(v);
+      const isMatched = await comparePartNumber(browser, v.pn);
+
+      if (v.link.includes(".pdf") || v.link.includes(".PDF")) {
+        axios({
+          method: "GET",
+          url: v.link,
+          responseType: "arraybuffer",
+        })
+          .then((res) => {
+            if (isMatched) {
+              console.log(`download matched pn : ${v.pn}, index : ${idx + 1}, last index : ${pdfs.length}`);
+              fs.writeFileSync(`${dir}/${v.mf}/비교${v.pn}.pdf`, res.data);
+            } else {
+              console.log(`download pn : ${v.pn}, index : ${idx + 1}, last index : ${pdfs.length}`);
               fs.writeFileSync(`${dir}/${v.mf}/${v.pn}.pdf`, res.data);
-            })
-            .catch((err) => {
-              console.log("@@ ERROR @@");
-              console.log(v.pn);
-              console.log(err);
-            });
-        } else {
-          fs.writeFileSync(`${dir}/${v.mf}/${v.pn}.txt`, "");
-        }
-      }, 300 * idx);
-    });
-    await page.close();
-    await browser.close();
+            }
+          })
+          .catch((err) => {
+            console.log("@@ ERROR @@");
+            console.log(v.pn);
+            console.log(err);
+          });
+      } else {
+        fs.writeFileSync(`${dir}/${v.mf}/${v.pn}.txt`, v.link);
+        console.log(`Fail pn : ${v.pn}, index : ${idx}, link : ${v.link}`);
+      }
+    }
   } catch (error) {
     console.log(error);
   }
 };
 
-crawler();
+// alldatasheet.com 검색 결과를 비교하여 boolean으로 반환
+async function comparePartNumber(browser, pn) {
+  const page2 = await browser.newPage();
+  await page2.goto(`https://www.alldatasheet.com/view.jsp?Searchword=${pn}`);
+  await page2.waitForTimeout(2000);
 
-// promise로 manufacture directory 비동기 생성
-// err가 생성되면 바로 종료되어버림..
+  const isMatched = await page2.evaluate(
+    (pn) => {
+      const mostMatchedPartNumber = document.querySelector("#cell10 td:nth-child(2) a").textContent.trim();
+      if (pn === mostMatchedPartNumber) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    [pn]
+  );
+  page2.close();
+  return new Promise((resolve, reject) => {
+    resolve(isMatched);
+  });
+}
 
 async function parseManufactureList(page) {
   const list = await page.evaluate(() => {
@@ -139,3 +167,6 @@ async function parseManufactureList(page) {
   });
   return list;
 }
+
+// query를 인자로 받아서 검색결과 데이터를 master-crawler로 다운받음
+crawler("1");

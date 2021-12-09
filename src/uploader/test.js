@@ -1,7 +1,18 @@
-const arr = [1, 2, 3, 4, 5];
+const arr = ["A", "B", "C", "D", "E"];
 
-arr.map((v, idx) => {
-  setTimeout(() => {
-    console.log(v);
-  }, 1000 * idx);
-});
+const delay = (v) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(v);
+    }, 1000);
+  });
+};
+
+const func = async () => {
+  for (const val of arr) {
+    const element = await delay(val);
+    console.log(element);
+  }
+};
+
+func();
