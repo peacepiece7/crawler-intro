@@ -1,30 +1,32 @@
-const puppeteer = require("puppeteer");
-const fs = require("fs");
-const path = require("path");
-const dotenv = require("dotenv");
-const { installMouseHelper } = require("../service/install-mouse-helper");
-const axios = require("axios");
+const puppeteer = require('puppeteer');
+const fs = require('fs');
+const path = require('path');
+const dotenv = require('dotenv');
+const { installMouseHelper } = require('../service/install-mouse-helper');
+const axios = require('axios');
 
 dotenv.config();
 
-const dir = path.join(__dirname, "..", "..", "..", "master-crawler");
+const dir = path.join(__dirname, '..', '..', '..', 'master-crawler');
 
+// master-crawler 디랙터리 생성
 fs.readdir(dir, null, (err) => {
   if (err) {
     fs.mkdirSync(dir);
   } else {
-    console.log("master-crawler directory가 존재합니다");
+    console.log('master-crawler directory가 존재합니다');
   }
 });
 
+// 크롤러 시작
 const crawler = async (query) => {
   try {
     const browser = await puppeteer.launch({
       headless: false,
-      args: ["--window-size:1720,1400"],
+      args: ['--window-size:1720,1400'],
     });
     await browser.userAgent(
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36"
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36'
     );
 
     let page = await browser.newPage();
@@ -34,28 +36,34 @@ const crawler = async (query) => {
     });
     await installMouseHelper(page);
 
-    // 작동 안하농.. alert아닌가
-    page.on("dialog", async (dialog) => {
+    // 미작동
+    page.on('dialog', async (dialog) => {
       try {
-        dialog.defaultValue("master");
+        dialog.defaultValue('master');
         await dialog.dismiss();
       } catch (err) {
         console.log(err);
-        console.log("dialog error");
+        console.log('dialog error');
       }
     });
-    await page.goto(`http://115.22.68.60/master/crawl/index.jsp?pre=${query}`, { waitUntil: "networkidle0" });
+    await page.goto(`http://115.22.68.60/master/crawl/index.jsp?pre=${query}`, {
+      waitUntil: 'networkidle0',
+    });
 
-    console.log("미우스 헬퍼 시작");
+    // 마우스 헬퍼
+    console.log('미우스 헬퍼 시작');
     await page.mouse.move(210, 85);
     await page.waitForTimeout(1000);
     await page.mouse.click(210, 85);
     await page.waitForTimeout(2000);
-    console.log("미우스 헬퍼 끝");
+    console.log('미우스 헬퍼 끝');
 
-    console.log("제조사 리스트 생성 시작");
+    // 제조사 리스트 생성
+    console.log('제조사 리스트 생성 시작');
     const manufactureList = await parseManufactureList(page);
-    const filteredManufactureList = manufactureList.filter((val, idx) => manufactureList.indexOf(val) === idx);
+    const filteredManufactureList = manufactureList.filter(
+      (val, idx) => manufactureList.indexOf(val) === idx
+    );
 
     filteredManufactureList.forEach((e) => {
       const manufactureDir = `${dir}/${e}`;
@@ -65,19 +73,21 @@ const crawler = async (query) => {
         }
       });
     });
-    console.log("제조사 리스트 생성 끝");
-    console.log("pdf parse 시작");
+    console.log('제조사 리스트 생성 끝');
+
+    // pdf parsing
+    console.log('pdf parse 시작');
     const pdfs = await page.evaluate(() => {
       const result = [];
-      Array.from(document.querySelectorAll("tbody tr")).map((v, idx) => {
+      Array.from(document.querySelectorAll('tbody tr')).map((v, idx) => {
         // pdf link
-        const link = v.querySelector("td:nth-child(5) a").href;
+        const link = v.querySelector('td:nth-child(5) a').href;
 
         // part number
-        const pn = v.querySelector(".pname").textContent;
+        const pn = v.querySelector('.pname').textContent;
 
         // manufacture
-        let mf = v.querySelector("#mfr").textContent.split("/");
+        let mf = v.querySelector('#mfr').textContent.split('/');
         if (mf[1]) {
           mf = `${mf[0].trim()} ${mf[1].trim()}`;
         } else {
@@ -87,26 +97,25 @@ const crawler = async (query) => {
       });
       return result;
     });
-    console.log("pdf parse 끝");
-    // alldatasheet에 검색 -> 일치하는 파트넘버가 있을 경우 다운로드하지만 확인을 요한다는 표시를 추가함
-    // https://www.alldatasheet.net/view.jsp?Searchword=A123
-    // 파트넘버 A123가 존재할 경우 경우 확인이필요합니다A123.pdf 이런 식으로 저장
+    console.log('pdf parse 끝');
 
-    // .txt로 저장된 파일의 경우 안에 들어있는 주소로 들어가서 확인 후 master-crawler에서 해당 파트넘버 제외하기
-    console.log("pdf compare & save 시작");
+    // compare pdf & save file
+    console.log('pdf compare & save 시작');
     for (const v of pdfs) {
       const idx = pdfs.indexOf(v);
       const isMatched = await comparePartNumber(browser, v.pn);
 
-      if (v.link.includes(".pdf") || v.link.includes(".PDF")) {
+      if (v.link.includes('.pdf') || v.link.includes('.PDF')) {
         axios({
-          method: "GET",
+          method: 'GET',
           url: v.link,
-          responseType: "arraybuffer",
+          responseType: 'arraybuffer',
         })
           .then((res) => {
             if (isMatched) {
-              console.log(`download matched pn : ${v.pn}, index : ${idx + 1}, last index : ${pdfs.length}`);
+              console.log(
+                `download matched pn : ${v.pn}, index : ${idx + 1}, last index : ${pdfs.length}`
+              );
               fs.writeFileSync(`${dir}/${v.mf}/비교${v.pn}.pdf`, res.data);
             } else {
               console.log(`download pn : ${v.pn}, index : ${idx + 1}, last index : ${pdfs.length}`);
@@ -114,7 +123,7 @@ const crawler = async (query) => {
             }
           })
           .catch((err) => {
-            console.log("@@ ERROR @@");
+            console.log('@@ ERROR @@');
             console.log(v.pn);
             console.log(err);
           });
@@ -136,7 +145,9 @@ async function comparePartNumber(browser, pn) {
 
   const isMatched = await page2.evaluate(
     (pn) => {
-      const mostMatchedPartNumber = document.querySelector("#cell10 td:nth-child(2) a").textContent.trim();
+      const mostMatchedPartNumber = document
+        .querySelector('#cell10 td:nth-child(2) a')
+        .textContent.trim();
       if (pn === mostMatchedPartNumber) {
         return true;
       } else {
@@ -151,13 +162,14 @@ async function comparePartNumber(browser, pn) {
   });
 }
 
+// 제조사 리스트를 분석,배열로 반환
 async function parseManufactureList(page) {
   const list = await page.evaluate(() => {
-    const name = Array.from(document.querySelectorAll("#mfr")).map((v) => {
+    const name = Array.from(document.querySelectorAll('#mfr')).map((v) => {
       return v.textContent && v.textContent;
     });
     const result = name.map((v) => {
-      const mf = v.split("/");
+      const mf = v.split('/');
       if (!mf[1]) {
         return mf[0];
       }
@@ -169,4 +181,4 @@ async function parseManufactureList(page) {
 }
 
 // query를 인자로 받아서 검색결과 데이터를 master-crawler로 다운받음
-crawler("1");
+crawler('1');
