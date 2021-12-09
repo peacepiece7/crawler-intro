@@ -18,22 +18,20 @@ const getMfDir = (dir) => {
   });
 };
 
+// for (v of vs){ const result = await delay(); }
 const getFullDir = (baseUrl, mfDirs) => {
-  return new Promise((resolve, reject) => {
-    const result = [];
-    for (const mfDir of mfDirs) {
-      fs.readdir(`${baseUrl}/${mfDir}`, (error, file) => {
-        // if (error) {
-        //   console.log(error);
-        //   return;
-        // }
-        if (file.includes(".pdf")) {
-          result.push({ mf: mfDir, pn: file });
+  const result = [];
+  for (const mfDir of mfDirs) {
+    const files = fs.readdirSync(`${baseUrl}/${mfDir}`);
+    if (files[0]) {
+      for (f of files) {
+        if (f.includes(".pdf") || f.includes(".PDF")) {
+          result.push({ mf: mfDir, pn: f });
         }
-      });
+      }
     }
-    resolve(result);
-  });
+  }
+  console.log(result);
 };
 
 async function saveDirToExcel() {
