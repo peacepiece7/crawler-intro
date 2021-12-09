@@ -21,10 +21,12 @@ fs.readdir(dir, null, (err) => {
 // 크롤러 시작
 const crawler = async (query) => {
   try {
+    // for window
     const browser = await puppeteer.launch({
-      headless: false,
+      headless: true,
       args: ['--window-size:1720,1400'],
     });
+
     await browser.userAgent(
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36'
     );
@@ -50,12 +52,19 @@ const crawler = async (query) => {
       waitUntil: 'networkidle0',
     });
 
-    // 마우스 헬퍼
+    // 마우스 헬퍼 for window (화면크기에 따라 조정이 필요)
     console.log('미우스 헬퍼 시작');
-    await page.mouse.move(210, 85);
-    await page.waitForTimeout(1000);
-    await page.mouse.click(210, 85);
+    // await page.mouse.move(210, 85);
+    // await page.waitForTimeout(1000);
+    // await page.mouse.click(210, 85);
+    // await page.waitForTimeout(2000);
+
+    // for mac
+    await page.mouse.move(220, 125);
+    await page.waitForTimeout(3000);
+    await page.mouse.click(220, 125);
     await page.waitForTimeout(2000);
+
     console.log('미우스 헬퍼 끝');
 
     // 제조사 리스트 생성

@@ -6,3 +6,8 @@ dist/
 
 coffee_assets
 assets
+
+master-crawler-done/
+master-crawler/
+pdfToExcel.xlsx
+Excel.xlsx
