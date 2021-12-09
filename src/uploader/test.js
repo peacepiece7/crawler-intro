@@ -1,18 +1,14 @@
-const arr = ["A", "B", "C", "D", "E"];
+const e = require("express");
+const fs = require("fs");
+const path = require("path");
+const dir = path.join("..", "master-crawler-done");
 
-const delay = (v) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve(v);
-    }, 1000);
-  });
-};
-
-const func = async () => {
-  for (const val of arr) {
-    const element = await delay(val);
-    console.log(element);
+fs.readdir(dir, (err, file) => {
+  if (err) {
+    console.log(err);
+  } else {
+    for (f of file) {
+      console.log(fs.readdirSync(`${dir}/${f}`));
+    }
   }
-};
-
-func();
+});

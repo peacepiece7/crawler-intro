@@ -18,12 +18,13 @@
     "datauri": "^4.1.0",
     "dotenv": "^10.0.0",
     "ejs": "^3.1.6",
+    "excel4node": "^1.7.2",
     "express": "^4.17.1",
     "lodash": "^4.17.21",
     "parcel-bundler": "^1.12.5",
     "puppeteer": "^11.0.0",
     "query-selector-shadow-dom": "^1.0.0",
-    "xlsx": "^0.17.2"
+    "xlsx": "^0.17.4"
   },
   "devDependencies": {
     "@babel/cli": "^7.15.7",
