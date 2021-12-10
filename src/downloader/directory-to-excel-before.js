@@ -62,6 +62,7 @@ async function saveDirToExcel() {
       backupWs.cell(i + 1, 2).string(partnumber);
       const dir = path.join(__dirname, "..", "..", "..");
       wb.write(`${dir}/pdfToExcel.xlsx`);
+      wb.write(`${dir}/pdfToExcel-backup.xlsx`);
     }
 
     // 각각의 폴더를 돌며 그 안의 pdf파일을 돔

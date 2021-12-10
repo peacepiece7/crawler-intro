@@ -9,6 +9,8 @@ const readline = require("readline");
 dotenv.config();
 
 const dir = path.join(__dirname, "..", "..", "..", "master-crawler");
+console.log("@@@@@@  폴더의 기본 정렬 기준을 크기로 변경해주세요  @@@@@@ ");
+console.log("이름 순으로 고정하면, 이름 고칠 때 엑셀의 순서가 변경됨!");
 
 // master-crawler 디랙터리 생성
 fs.readdir(dir, null, (err) => {
@@ -40,7 +42,7 @@ const crawler = async (query) => {
     await page.goto(`http://115.22.68.60/master/crawl/index.jsp?pre=${query}`, {
       waitUntil: "networkidle0",
     });
-    console.log("미우스 헬퍼 시작");
+
     // 마우스 헬퍼 for 회사컴 (화면크기에 따라 조정이 필요)
     await page.mouse.move(210, 85);
     await page.waitForTimeout(1000);
@@ -53,10 +55,7 @@ const crawler = async (query) => {
     // await page.mouse.click(220, 125);
     // await page.waitForTimeout(2000);
 
-    console.log("미우스 헬퍼 끝");
-
     // 제조사 리스트 생성
-    console.log("제조사 리스트 생성 시작");
     const manufactureList = await parseManufactureList(page);
     const filteredManufactureList = manufactureList.filter((val, idx) => manufactureList.indexOf(val) === idx);
 
@@ -68,10 +67,9 @@ const crawler = async (query) => {
         }
       });
     });
-    console.log("제조사 리스트 생성 끝");
 
     // pdf parsing
-    console.log("pdf parse 시작");
+
     const pdfs = await page.evaluate(() => {
       const result = [];
       Array.from(document.querySelectorAll("tbody tr")).map((v, idx) => {
@@ -92,10 +90,9 @@ const crawler = async (query) => {
       });
       return result;
     });
-    console.log("pdf parse 끝");
 
     // compare pdf & save file
-    console.log("pdf compare & save 시작");
+
     for (const v of pdfs) {
       const idx = pdfs.indexOf(v);
       const isMatched = await comparePartNumber(browser, v.pn);
