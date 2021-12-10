@@ -6,7 +6,13 @@
   "scripts": {
     "start": "node src/service/main.js",
     "dev:start": "nodemon",
-    "build": "babel src -d lib"
+    "build": "babel src -d lib",
+    "excelbefore": "node src/downloader/directory-to-excel-before.js",
+    "excelafter": "node src/downloader/directory-to-excel-after.js",
+    "masterdownloader": "node src/downloader/master-crawler-downloader.js",
+    "old60tar": "node src/uploader/old-tar-uploader.js",
+    "gcppdf": "node src/uploader/60-pdf-uploader.js",
+    "gcptar": "node src/uploader/60-tar-uploader.js"
   },
   "author": "",
   "license": "ISC",
