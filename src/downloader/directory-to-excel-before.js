@@ -1,12 +1,12 @@
-const xl = require("excel4node");
-const path = require("path");
-const fs = require("fs");
+const xl = require('excel4node');
+const path = require('path');
+const fs = require('fs');
 
 // Create a new instance of a Workbook class
 const wb = new xl.Workbook();
 
-const ws = wb.addWorksheet("before");
-const backupWs = wb.addWorksheet("backup");
+const ws = wb.addWorksheet('before');
+const backupWs = wb.addWorksheet('backup');
 ws.column(1).setWidth(40);
 ws.column(2).setWidth(30);
 ws.column(3).setWidth(30);
@@ -15,9 +15,11 @@ backupWs.column(1).setWidth(40);
 backupWs.column(2).setWidth(30);
 backupWs.column(3).setWidth(30);
 
-// window 기준으로 작성
-const baseUrl = path.join(__dirname, "..", "..", "..", "master-crawler");
-// const baseUrl = "./master-crawler-done";
+// for window directory
+// const baseUrl = path.join(__dirname, '..', '..', '..', 'master-crawler');
+
+// for mac test directory
+const baseUrl = './master-crawler';
 
 const getMfDir = (dir) => {
   return new Promise((resolve, reject) => {
@@ -37,7 +39,7 @@ const getFullDir = (baseUrl, mfDirs) => {
     const files = fs.readdirSync(`${baseUrl}/${mfDir}`);
     if (files[0]) {
       for (f of files) {
-        if (f.includes(".pdf") || f.includes(".PDF")) {
+        if (f.includes('.pdf') || f.includes('.PDF')) {
           result.push({ mf: mfDir, pn: f });
         }
       }
@@ -60,7 +62,11 @@ async function saveDirToExcel() {
       // Origin part number
       ws.cell(i + 1, 2).string(partnumber);
       backupWs.cell(i + 1, 2).string(partnumber);
-      const dir = path.join(__dirname, "..", "..", "..");
+      // for window directory
+      // const dir = path.join(__dirname, '..', '..', '..');
+
+      // for mac directory (test only)
+      const dir = path.join(__dirname, '..', '..');
       wb.write(`${dir}/pdfToExcel.xlsx`);
       wb.write(`${dir}/pdfToExcel-backup.xlsx`);
     }

@@ -1,16 +1,20 @@
-const puppeteer = require("puppeteer");
-const fs = require("fs");
-const path = require("path");
-const dotenv = require("dotenv");
-const { installMouseHelper } = require("../service/install-mouse-helper");
-const axios = require("axios");
-const readline = require("readline");
+const puppeteer = require('puppeteer');
+const fs = require('fs');
+const path = require('path');
+const dotenv = require('dotenv');
+const { installMouseHelper } = require('../service/install-mouse-helper');
+const axios = require('axios');
+const readline = require('readline');
 
 dotenv.config();
 
-const dir = path.join(__dirname, "..", "..", "..", "master-crawler");
-console.log("@@@@@@  폴더의 기본 정렬 기준을 크기로 변경해주세요  @@@@@@ ");
-console.log("이름 순으로 고정하면, 이름 고칠 때 엑셀의 순서가 변경됨!");
+// for window directory
+const dir = path.join(__dirname, '..', '..', '..', 'master-crawler');
+
+// for mac test directory
+// const dir = "./master-crawler-done";
+console.log('@@@@@@  폴더의 기본 정렬 기준을 크기로 변경해주세요  @@@@@@ ');
+console.log('이름 순으로 고정하면, 이름 고칠 때 엑셀의 순서가 변경됨!');
 
 // master-crawler 디랙터리 생성
 fs.readdir(dir, null, (err) => {
@@ -25,11 +29,11 @@ const crawler = async (query) => {
     // for window
     const browser = await puppeteer.launch({
       headless: false,
-      args: ["--window-size:1720,1400"],
+      args: ['--window-size:1720,1400'],
     });
 
     await browser.userAgent(
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36"
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36'
     );
 
     let page = await browser.newPage();
@@ -40,7 +44,7 @@ const crawler = async (query) => {
     await installMouseHelper(page);
 
     await page.goto(`http://115.22.68.60/master/crawl/index.jsp?pre=${query}`, {
-      waitUntil: "networkidle0",
+      waitUntil: 'networkidle0',
     });
 
     // 마우스 헬퍼 for 회사컴 (화면크기에 따라 조정이 필요)
@@ -57,7 +61,9 @@ const crawler = async (query) => {
 
     // 제조사 리스트 생성
     const manufactureList = await parseManufactureList(page);
-    const filteredManufactureList = manufactureList.filter((val, idx) => manufactureList.indexOf(val) === idx);
+    const filteredManufactureList = manufactureList.filter(
+      (val, idx) => manufactureList.indexOf(val) === idx
+    );
 
     filteredManufactureList.forEach((e) => {
       const manufactureDir = `${dir}/${e}`;
@@ -72,15 +78,15 @@ const crawler = async (query) => {
 
     const pdfs = await page.evaluate(() => {
       const result = [];
-      Array.from(document.querySelectorAll("tbody tr")).map((v, idx) => {
+      Array.from(document.querySelectorAll('tbody tr')).map((v, idx) => {
         // pdf link
-        const link = v.querySelector("td:nth-child(5) a").href;
+        const link = v.querySelector('td:nth-child(5) a').href;
 
         // part number
-        const pn = v.querySelector(".pname").textContent;
+        const pn = v.querySelector('.pname').textContent;
 
         // manufacture
-        let mf = v.querySelector("#mfr").textContent.split("/");
+        let mf = v.querySelector('#mfr').textContent.split('/');
         if (mf[1]) {
           mf = `${mf[0].trim()} ${mf[1].trim()}`;
         } else {
@@ -97,30 +103,36 @@ const crawler = async (query) => {
       const idx = pdfs.indexOf(v);
       const isMatched = await comparePartNumber(browser, v.pn);
 
-      if (v.link.includes(".pdf") || v.link.includes(".PDF")) {
+      if (v.link.includes('.pdf') || v.link.includes('.PDF')) {
         axios({
-          method: "GET",
+          method: 'GET',
           url: v.link,
-          responseType: "arraybuffer",
+          responseType: 'arraybuffer',
         })
           .then((res) => {
             let partnumber = v.pn;
-            if (v.pn.includes("/")) {
+            if (v.pn.includes('/')) {
               console.log(`master-crawler 이름 :${v.pn}`);
-              partnumber = `이름변경${v.pn.split("/")[0]}`;
+              partnumber = `이름변경${v.pn.split('/')[0]}`;
             }
             if (isMatched) {
-              console.log(`download matched pn : ${partnumber}, index : ${idx + 1}, last index : ${pdfs.length}`);
+              console.log(
+                `download matched pn : ${partnumber}, index : ${idx + 1}, last index : ${
+                  pdfs.length
+                }`
+              );
               fs.writeFileSync(`${dir}/${v.mf}/비교${partnumber}.pdf`, res.data);
             } else {
-              console.log(`download pn : ${partnumber}, index : ${idx + 1}, last index : ${pdfs.length}`);
+              console.log(
+                `download pn : ${partnumber}, index : ${idx + 1}, last index : ${pdfs.length}`
+              );
               fs.writeFileSync(`${dir}/${v.mf}/${partnumber}.pdf`, res.data);
             }
           })
           .catch((err) => {
-            console.log("@@@@@@@@@  ERROR @@@@@@@@@");
-            console.log("Part number : ", v.pn);
-            console.log("@@@@@@@@@  ERROR @@@@@@@@@");
+            console.log('@@@@@@@@@  ERROR @@@@@@@@@');
+            console.log('Part number : ', v.pn);
+            console.log('@@@@@@@@@  ERROR @@@@@@@@@');
           });
       } else {
         fs.writeFileSync(`${dir}/${v.mf}/${v.pn}.txt`, v.link);
@@ -128,7 +140,7 @@ const crawler = async (query) => {
       }
     }
   } catch (error) {
-    console.log("@@@ catch error @@@");
+    console.log('@@@ catch error @@@');
     console.log(error);
   }
 };
@@ -141,10 +153,10 @@ async function comparePartNumber(browser, pn) {
 
   const isMatched = await page2.evaluate(
     (pn) => {
-      if (!document.querySelector("#cell10 td:nth-child(2) a")) {
+      if (!document.querySelector('#cell10 td:nth-child(2) a')) {
         return false;
       }
-      const mostMatchedPn = document.querySelector("#cell10 td:nth-child(2) a").textContent.trim();
+      const mostMatchedPn = document.querySelector('#cell10 td:nth-child(2) a').textContent.trim();
       if (pn === mostMatchedPn) {
         return true;
       } else {
@@ -162,11 +174,11 @@ async function comparePartNumber(browser, pn) {
 // 제조사 리스트를 분석,배열로 반환
 async function parseManufactureList(page) {
   const list = await page.evaluate(() => {
-    const name = Array.from(document.querySelectorAll("#mfr")).map((v) => {
+    const name = Array.from(document.querySelectorAll('#mfr')).map((v) => {
       return v.textContent && v.textContent;
     });
     const result = name.map((v) => {
-      const mf = v.split("/");
+      const mf = v.split('/');
       if (!mf[1]) {
         return mf[0];
       }
@@ -186,11 +198,11 @@ const rl = readline.createInterface({
 
 function getInput() {
   let input;
-  console.log("Query를 입력하세요");
-  rl.on("line", (line) => {
+  console.log('Query를 입력하세요');
+  rl.on('line', (line) => {
     input = line;
     rl.close();
-  }).on("close", () => {
+  }).on('close', () => {
     crawler(input);
   });
 }
