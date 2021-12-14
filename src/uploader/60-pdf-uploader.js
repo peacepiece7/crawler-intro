@@ -5,7 +5,7 @@ const fs = require("fs");
 
 // * upload tar 파일에 저장해주세요
 const crawler = async (siteName) => {
-  const FilePath = __dirname.split("crawler-intro")[0] + "upload2";
+  const FilePath = __dirname.split("crawler-intro")[0] + "upload";
   const input = fs.readdirSync(FilePath).toString();
 
   const pdfFiles = input.split(",").filter((file) => {
@@ -20,7 +20,7 @@ const crawler = async (siteName) => {
   });
   try {
     const browser = await puppeteer.launch({
-      headless: true,
+      headless: false,
       args: ["--window-size:1400,1400"],
     });
 
@@ -59,8 +59,7 @@ const crawler = async (siteName) => {
     for (let i = 0; i < pdfFiles.length; i++) {
       try {
         page = await browser.newPage();
-        await page.goto("http://34.64.149.214/master/datasheet_reg.jsp");
-        await page.waitForSelector("input[name=info]");
+        await page.goto("http://34.64.149.214/master/datasheet_reg.jsp", { waitUntil: "networkidle0" });
         await page.waitForTimeout(1000);
 
         const pdfName = pdfFiles[i].toString().slice(0, pdfFiles[i].length - 4);
@@ -93,8 +92,9 @@ const crawler = async (siteName) => {
 };
 
 // * 제조사 풀 네임을 여기에 입력
-crawler(" Weidmuller [WEIDMULLER]^786");
+crawler("Keystone Electronics Corp. [KEYSTONE]^1313");
 
 // WAGO Kontakttechnik GmbH & Co. KG [WAGO]^1451
 // HARTING Technology Group [HARTING]^1414
 // Weidmuller [WEIDMULLER]^786
+// Keystone Electronics Corp. [KEYSTONE]^1313

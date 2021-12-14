@@ -21,8 +21,8 @@ const crawler = async (provider) => {
     await page.waitForSelector("select");
     await page.waitForTimeout(Math.floor(Math.random() * 1000));
 
-    let bool = true;
-    while (bool) {
+    let check = true;
+    while (check) {
       await page.type("select", provider);
       await page.waitForTimeout(Math.floor(Math.random() * 1000));
 
@@ -65,7 +65,7 @@ const crawler = async (provider) => {
         await page.keyboard.up("Control");
         await page.waitForTimeout(Math.floor(Math.random() * 5000 + 5000));
       } else {
-        bool = false;
+        check = false;
       }
     }
   } catch (err) {
@@ -81,4 +81,6 @@ const crawler = async (provider) => {
 
 // 검색할 내용을 입력하세요
 
-crawler("wago");
+const siteNames = "Schneider";
+
+crawler(siteNames);

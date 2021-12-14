@@ -2,11 +2,8 @@ const dotenv = require("dotenv");
 dotenv.config();
 const puppeteer = require("puppeteer");
 const fs = require("fs");
-
 // * 각 컴퓨터 마다 path 수정
-const crawler = async (siteName) => {
-  const FilePath = __dirname.split("crawler-intro")[0] + "tar";
-
+const crawler = async (siteNames) => {
   try {
     const browser = await puppeteer.launch({
       headless: false,
@@ -44,40 +41,47 @@ const crawler = async (siteName) => {
     await page.click("input[type=submit]");
     await page.waitForTimeout(Math.floor(Math.random() * 3000 + 2000));
 
-    let check = true;
-    // Go to tar upload page
-    while (check) {
-      page = await browser.newPage();
-      await page.goto("http://34.64.149.214/master/uphtml_sub_all.jsp");
-      await page.waitForTimeout(1000);
+    // if (typeof siteNames === "string") {
+    //   uploadTar(browser, siteNames);
+    // }
 
-      await page.type("input[name=sFactory]", siteName);
-      await page.click("input[name=cc]");
-      await page.waitForSelector("input[name=sFactory]");
-      await page.waitForTimeout(3000);
-
-      const partNumber = await page.evaluate(() => {
-        if (document.querySelector("body > center table tbody tr:nth-child(2) td")) {
-          const fileName = document.querySelector("body > center table tbody tr:nth-child(2) td").textContent;
-          return fileName;
-        } else {
-          return null;
-        }
-      });
-      console.log("Uploaded part number :", partNumber);
-      if (partNumber) {
-        const text = `${FilePath}\\${partNumber}.tgz`;
-        const inputElement = await page.$("input[type=file]");
-        await inputElement.uploadFile(text);
+    for (let i = 0; i < siteNames.length; i++) {
+      const siteName = siteNames[i];
+      const FilePath = __dirname.split("crawler-intro")[0] + "tar-test";
+      let check = true;
+      while (check) {
+        page = await browser.newPage();
+        await page.goto("http://34.64.149.214/master/uphtml_sub_all.jsp", { waitUntil: "networkidle0" });
         await page.waitForTimeout(1000);
+        await page.type("input[name=sFactory]", siteName);
+        await page.click("input[name=cc]");
+        await page.waitForTimeout(1000);
+        await page.waitForSelector("body > center table tbody tr:nth-child(2) td");
+        await page.waitForTimeout(2000);
 
-        await page.click("input[name=B1]");
-        await page.waitForNetworkIdle();
-        await page.waitForTimeout(Math.floor(Math.random() * 1000 + 5000));
-      } else {
-        check = false;
+        const partNumber = await page.evaluate(() => {
+          if (document.querySelector("body > center table tbody tr[align=center]:nth-child(2) td")) {
+            return document.querySelector("body > center table tbody tr[align=center]:nth-child(2) td").textContent;
+          }
+          return null;
+        });
+        console.log("part number :", partNumber);
+
+        if (partNumber) {
+          const text = `${FilePath}\\${partNumber}.tgz`;
+          const inputElement = await page.$("input[type=file]");
+          await inputElement.uploadFile(text);
+          await page.waitForTimeout(1000);
+          await page.click("input[name=B1]");
+          await page.waitForNetworkIdle();
+          await page.waitForTimeout(Math.floor(Math.random() * 1000 + 5000));
+          console.log("Uploaded part number :", partNumber);
+        } else {
+          check = false;
+        }
       }
     }
+    // Go to tar upload page
   } catch (e) {
     console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
     console.log("@@@@@@@@@@@@@@@@@@@@     ERROR     @@@@@@@@@@@@@@@@@@@@");
@@ -90,10 +94,13 @@ const crawler = async (siteName) => {
 };
 
 // * 제조사 풀 네임을 여기에 입력
-crawler("Schneider Electric [SCHNEIDER]^SCHNEIDER");
+const siteNames = ["Littelfuse [LITTELFUSE]^LITTELFUSE", "HARTING Technology Group [HARTING]^HARTING"];
+
+crawler(siteNames);
 
 // Weidmuller [WEIDMULLER]^Weidmuller
 // WAGO Kontakttechnik GmbH & Co. KG [WAGO]^WAGO
 // HARTING Technology Group [HARTING]^HARTING
 // Keystone Electronics Corp. [KEYSTONE]^Keystone
-// Schneider Electric [SCHNEIDER]^SCHNEIDER
+// Schneider Electric [SCHNEIDER]^Schneider
+// TDK Electronics [TDK]^TDK
