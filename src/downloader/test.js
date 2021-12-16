@@ -1,3 +1,5 @@
-let str = "all the. col;mp";
+const path = require('path');
 
-console.log(str.split("l").join(","));
+const excelDir = path.join(__dirname, '..', '..', 'crawling_work_sheet.xlsx');
+
+console.log(excelDir);

@@ -1,3 +1,5 @@
+//! TEST FILE USED ONLY ON MAC
+
 const xl = require('excel4node');
 const path = require('path');
 const fs = require('fs');
@@ -14,8 +16,6 @@ afterWs.column(1).setWidth(30);
 afterWs.column(2).setWidth(30);
 afterWs.column(3).setWidth(30);
 
-// rev 12.16.2021
-// ! INPUT :  바탕화면에서 master_crawler폴더를 찾아서 실행해야합니다. 작업 컴퓨터에서 경로를 변경해주세요
 const baseUrl = path.join(__dirname, '..', '..', '..', 'master_crawler');
 
 const getMfDir = (dir) => {
@@ -38,7 +38,8 @@ const getFullDir = (baseUrl, mfDirs) => {
       for (f of files) {
         if (f.includes('.pdf') || f.includes('.PDF')) {
           const file = f.slice(0, f.length - 4);
-          result.push({ mf: mfDir, pn: file });
+          const folder = mfDir.split('.').join('');
+          result.push({ mf: folder, pn: file });
         }
       }
     }
@@ -50,12 +51,10 @@ async function saveDirToExcel() {
   try {
     const mfDirs = await getMfDir(baseUrl);
     const result = getFullDir(baseUrl, mfDirs);
+
     for (let i = 0; i < result.length - 1; i++) {
       const mf = result[i].mf;
       const pn = result[i].pn;
-
-      // rev 12.16.2021
-      //! OUTPUT : 작업 컴퓨터에서 바탕화면 폴더의 경로를 지정해주세요(window)
       const dir = path.join(__dirname, '..', '..', '..');
 
       ws.cell(i + 1, 1).string(mf);

@@ -1,13 +1,12 @@
+//! TEST FILE USED ONLY ON MAC
+
 const xlsx = require('xlsx');
 const path = require('path');
-const add_to_sheet = require('../service/add_to_sheet');
+const add_to_sheet = require('../../service/add_to_sheet.js');
 const fs = require('fs');
 
-// rev 12.16.2021
-// ! INPUT PATH : 바탕화면에서 crawling_work_sheet.xlsx'폴더를 찾아서 실행해야합니다. 작업 컴퓨터에서 경로를 변경해주세요
-// ! INPUT PATH : 바탕화면에서 master_crawler폴더를 찾아서 실행해야합니다. 작업 컴퓨터에서 경로를 변경해주세요
-const excelDir = path.join(__dirname, '..', '..', 'crawling_work_sheet.xlsx');
-const folderDir = path.join(__dirname, '..', '..', 'master_crawler');
+const excelDir = path.join(__dirname, '..', '..', '..', 'crawling_work_sheet.xlsx');
+const folderDir = path.join(__dirname, '..', '..', '..', 'master_crawler');
 
 const wb = xlsx.readFile(excelDir);
 const ws = wb.Sheets.AFTER;

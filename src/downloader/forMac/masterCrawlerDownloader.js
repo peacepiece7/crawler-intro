@@ -1,3 +1,5 @@
+// ! TEST FILE USED ONLY ON MAC
+
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
@@ -33,12 +35,11 @@ const crawler = async (query) => {
       waitUntil: 'networkidle0',
     });
 
-    // Mouse helper
-    // for window
-    await page.mouse.move(210, 85);
+    // for mac
+    await page.mouse.move(220, 125);
+    await page.waitForTimeout(3000);
+    await page.mouse.click(220, 125);
     await page.waitForTimeout(1000);
-    await page.mouse.click(210, 85);
-    await page.waitForTimeout(2000);
 
     const manufactureList = await parseManufactureList(page);
     const filteredManufactureList = manufactureList.filter((val, idx) => manufactureList.indexOf(val) === idx);
