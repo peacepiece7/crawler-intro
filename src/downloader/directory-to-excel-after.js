@@ -5,7 +5,7 @@ const fs = require("fs");
 // Create a new instance of a Workbook class
 const wb = new xl.Workbook();
 
-const ws = wb.addWorksheet("after");
+const ws = wb.addWorksheet("AFTER");
 ws.column(1).setWidth(40);
 ws.column(2).setWidth(30);
 ws.column(3).setWidth(30);

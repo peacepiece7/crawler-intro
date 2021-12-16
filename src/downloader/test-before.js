@@ -6,17 +6,17 @@ const fs = require("fs");
 const wb = new xl.Workbook();
 
 const ws = wb.addWorksheet("BEFORE");
-const backupWs = wb.addWorksheet("BACKUP");
+const afterWs = wb.addWorksheet("AFTER");
 ws.column(1).setWidth(40);
 ws.column(2).setWidth(30);
 ws.column(3).setWidth(30);
 
-backupWs.column(1).setWidth(40);
-backupWs.column(2).setWidth(30);
-backupWs.column(3).setWidth(30);
+afterWs.column(1).setWidth(40);
+afterWs.column(2).setWidth(30);
+afterWs.column(3).setWidth(30);
 
 // for window directory
-const baseUrl = path.join(__dirname, "..", "..", "..", "master-crawler");
+const baseUrl = path.join(__dirname, "..", "master-crawler");
 
 // for mac test directory
 // const baseUrl = './master-crawler';
@@ -40,7 +40,12 @@ const getFullDir = (baseUrl, mfDirs) => {
     if (files[0]) {
       for (f of files) {
         if (f.includes(".pdf") || f.includes(".PDF")) {
-          result.push({ mf: mfDir, pn: f });
+          let mf = mfDir;
+          if (mf.includes(".")) {
+            mf = mfDir.split(".").join("");
+          }
+          const file = f.slice(0, f.length - 4);
+          result.push({ mf: mf, pn: file });
         }
       }
     }
@@ -58,22 +63,18 @@ async function saveDirToExcel() {
       // Manufacture column
       ws.cell(i + 1, 1).string(el.mf);
 
-      backupWs.cell(i + 1, 1).string(el.mf);
+      afterWs.cell(i + 1, 1).string(el.mf);
       // Origin part number
       ws.cell(i + 1, 2).string(partnumber);
-      backupWs.cell(i + 1, 2).string(partnumber);
+      afterWs.cell(i + 1, 2).string(partnumber);
 
       // for window directory
-      const dir = path.join(__dirname, "..", "..", "..");
+      //   const dir = path.join(__dirname, "..", "..", "..");
       // for mac directory (test only)
-      // const dir = path.join(__dirname, "..", "..");
+      const dir = path.join(__dirname, "..", "..");
 
-      wb.write(`${dir}/pdfToExcel.xlsx`);
-      wb.write(`${dir}/pdfToExcel-backup.xlsx`);
+      wb.write(`${dir}/crawling_work_sheet.xlsx`);
     }
-
-    // 각각의 폴더를 돌며 그 안의 pdf파일을 돔
-    // [{dir : "TDK", pn : "a123"},{dir : "TDK", pn : "b444"}] 이런 배열을 만듬
   } catch (error) {
     console.log(error);
   }

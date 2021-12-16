@@ -46,11 +46,13 @@ const crawler = async (provider) => {
       await page.waitForTimeout(5000);
 
       const partNumber = await page.evaluate(() => {
-        return document.querySelector("tr td:nth-child(1) > a").textContent;
+        if (document.querySelector("tr[align=center] td:nth-child(1) > a")) {
+          return document.querySelector("tr[align=center] td:nth-child(1) > a").textContent;
+        }
+        return null;
       });
 
-      const FilePath = __dirname.split("crawler-intro")[0] + "tar";
-
+      const FilePath = __dirname.split("crawler-intro")[0] + "tar-test";
       if (partNumber) {
         const text = `${FilePath}\\${partNumber}.tgz`;
         const input = await page.$("input[type=file]");
@@ -81,6 +83,6 @@ const crawler = async (provider) => {
 
 // 검색할 내용을 입력하세요
 
-const siteNames = "Schneider";
+const siteNames = "keyston";
 
 crawler(siteNames);

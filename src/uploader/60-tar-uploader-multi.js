@@ -47,7 +47,7 @@ const crawler = async (siteNames) => {
 
     for (let i = 0; i < siteNames.length; i++) {
       const siteName = siteNames[i];
-      const FilePath = __dirname.split("crawler-intro")[0] + "tar-test";
+      const FilePath = __dirname.split("crawler-intro")[0] + "tar";
       let check = true;
       while (check) {
         page = await browser.newPage();
@@ -94,7 +94,7 @@ const crawler = async (siteNames) => {
 };
 
 // * 제조사 풀 네임을 여기에 입력
-const siteNames = ["Littelfuse [LITTELFUSE]^LITTELFUSE", "HARTING Technology Group [HARTING]^HARTING"];
+const siteNames = ["Keystone Electronics Corp. [KEYSTONE]^Keystone"];
 
 crawler(siteNames);
 

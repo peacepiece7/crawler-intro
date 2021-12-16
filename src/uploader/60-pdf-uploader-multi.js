@@ -39,7 +39,7 @@ const crawler = async (options) => {
     await page.click("input[type=submit]");
 
     if (typeof options === "string") {
-      const FilePath = `${__dirname.split("crawler-intro")[0]}upload-test`;
+      const FilePath = `${__dirname.split("crawler-intro")[0]}upload`;
       const input = fs.readdirSync(FilePath).toString();
       const siteName = option[i].keyword;
       const pdfFiles = input.split(",").filter((file) => {
@@ -56,7 +56,7 @@ const crawler = async (options) => {
       await page.waitForTimeout(1000);
       // PDF 등록
       for (let i = 0; i < pdfFiles.length; i++) {
-        const page = await browser.newPage();
+        // const page = await browser.newPage();
         await page.goto("http://34.64.149.214/master/datasheet_reg.jsp", { waitUntil: "networkidle0" });
         const pdfName = pdfFiles[i].toString().slice(0, pdfFiles[i].length - 4);
         await page.waitForTimeout(1000);
@@ -74,8 +74,8 @@ const crawler = async (options) => {
         await page.waitForTimeout(Math.floor(Math.random() * 4000 + 2000));
       }
     } else {
-      for (let i = 0; i < options.length - 1; i++) {
-        const FilePath = `${__dirname.split("crawler-intro")[0]}upload-test/${options[i].folder}`;
+      for (let i = 0; i < options.length; i++) {
+        const FilePath = `${__dirname.split("crawler-intro")[0]}upload/${options[i].folder}`;
         const input = fs.readdirSync(FilePath).toString();
         const siteName = option[i].keyword;
         const pdfFiles = input.split(",").filter((file) => {
@@ -124,12 +124,12 @@ const crawler = async (options) => {
 
 const option = [
   {
-    folder: "EPCOS TDK",
-    keyword: "TDK Electronics [TDK]^252",
+    folder: "Amphenol Wilcoxon",
+    keyword: "Amphenol Corporation [AMPHENOL]^795",
   },
   {
-    folder: "Littelfuse",
-    keyword: "Littelfuse [LITTELFUSE]^87",
+    folder: "Analog Devices",
+    keyword: "Analog Devices [AD]^15",
   },
 ];
 
@@ -143,3 +143,4 @@ crawler(option);
 // Weidmuller [WEIDMULLER]^786
 // Keystone Electronics Corp. [KEYSTONE]^1313
 // Schneider Electric [SCHNEIDER]^1309
+// 3M Electronics [3M]^353
