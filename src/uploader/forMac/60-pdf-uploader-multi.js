@@ -11,7 +11,6 @@ const crawler = async (options) => {
       args: ['--window-size:1400,1400'],
     });
 
-    // * 각 컴퓨터 마다 navigator.userAgent 확인 후 수정
     await browser.userAgent(
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36'
     );
@@ -22,12 +21,11 @@ const crawler = async (options) => {
       height: 1280,
     });
 
-    // prettier-ignore
     page.on('console', (log) => {
-        if(log._type !== "warning"){
-          console.log(log._text)
-        }
-      });
+      if (log._type !== 'warning') {
+        console.log(log._text);
+      }
+    });
 
     // Login
     await page.goto('http://34.64.149.214/master/login.jsp');
@@ -137,7 +135,6 @@ crawler(option);
 
 // * 제조사 풀 네임을 여기에 입력
 // crawler("Schneider Electric [SCHNEIDER]^1309");
-
 // WAGO Kontakttechnik GmbH & Co. KG [WAGO]^1451
 // HARTING Technology Group [HARTING]^1414
 // Weidmuller [WEIDMULLER]^786
