@@ -1,10 +1,14 @@
+// ! 작업 환경에 맞게 디렉토리와 mouse helper를 수정해야 합니다.
+
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
-const { installMouseHelper } = require('../service/install-mouse-helper');
+const { installMouseHelper } = require('../../service/install-mouse-helper');
 const axios = require('axios');
 const readline = require('readline');
 
+// rev 12.16.2021
+// ! 작업 환경에 맞게 바탕화면으로 폴더 위치를 변경해주세요.
 const dir = path.join(__dirname, '..', '..', '..', 'master_crawler');
 
 // Craete master_crawler folder
@@ -33,8 +37,7 @@ const crawler = async (query) => {
       waitUntil: 'networkidle0',
     });
 
-    // Mouse helper
-    // for window
+    // mouse helper for window
     await page.mouse.move(210, 85);
     await page.waitForTimeout(1000);
     await page.mouse.click(210, 85);
@@ -91,11 +94,11 @@ const crawler = async (query) => {
               pn = `변경${v.pn.split('.')[0]}`;
             }
             if (isMatched) {
-              console.log(`다운로드 : ${v.pn}, 인덱스 : ${idx + 1}, 마지막 인덱스 : ${pdfs.length}`);
-              fs.writeFileSync(`${dir}/${v.mf}/존재${v.pn}.pdf`, res.data);
+              console.log(`다운로드: ${pn}/${v.mf}, 인덱스: ${idx + 1}, 마지막 인덱스: ${pdfs.length}`);
+              fs.writeFileSync(`${dir}/${v.mf}/존재${pn}.pdf`, res.data);
             } else {
-              console.log(`다운로드 : ${v.pn}, 인덱스 : ${idx + 1}, 마지막 인덱스 : ${pdfs.length}`);
-              fs.writeFileSync(`${dir}/${v.mf}/${v.pn}.pdf`, res.data);
+              console.log(`다운로드: ${v.pn}/${v.mf}, 인덱스: ${idx + 1}, 마지막 인덱스: ${pdfs.length}`);
+              fs.writeFileSync(`${dir}/${v.mf}/${pn}.pdf`, res.data);
             }
           })
           .catch((error) => {
@@ -104,18 +107,22 @@ const crawler = async (query) => {
             console.log('pn : ', v.pn);
           });
       } else {
-        fs.writeFileSync(`${dir}/${v.mf}/${v.pn}.txt`, v.link);
+        fs.writeFileSync(`${dir}/${v.mf}/${pn}.txt`, v.link);
         // prettier-ignore
         // console.log(`Download failure, 파트넘버 : ${v.pn}, 인덱스 : ${idx}, 제조사 : ${v.mf} @@`);
         // console.log(`${v.pn}.pdf파일이 존재하지 않습니다. 아래 링크에서 확인해주세요`);
         // console.log(v.link);
       }
     }
-    console.log('다운로드가 끝났습니다. 아래 공지를 학인해주세요');
-    console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-    console.log('1. "변경" or "존재"라고 파트넘버 앞에 붙어 있다면 확인 후 삭제해주세요.');
-    console.log('2. .txt 파일로 저장된 경우 pdf파일이 존재하지 않는 경로입니다. 확인 후 삭제해주세요.');
-    console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+
+    console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+    console.log('@                                                                                      @');
+    console.log('@                    다운로드가 끝났습니다. 아래 공지를 학인해주세요                   @');
+    console.log('@                                                                                      @');
+    console.log('@        1. "변경" or "존재"라고 파트넘버 앞에 붙어 있다면 확인 후 삭제해주세요.       @');
+    console.log('@ 2. .txt 파일로 저장된 경우 pdf파일이 존재하지 않는 경로입니다. 확인 후 삭제해주세요. @');
+    console.log('@                                                                                      @');
+    console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
     console.log('10초 후 종료합니다.');
     await page.waitForTimeout(100000);
     await page.close();
