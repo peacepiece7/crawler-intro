@@ -1,13 +1,13 @@
 // ! TEST FILE USED ONLY ON MAC
 
-const puppeteer = require('puppeteer');
-const fs = require('fs');
-const path = require('path');
-const { installMouseHelper } = require('../../service/install-mouse-helper');
-const axios = require('axios');
-const readline = require('readline');
+const puppeteer = require("puppeteer");
+const fs = require("fs");
+const path = require("path");
+const { installMouseHelper } = require("../../service/install-mouse-helper");
+const axios = require("axios");
+const readline = require("readline");
 
-const dir = path.join(__dirname, '..', '..', '..', 'master_crawler');
+const dir = path.join(__dirname, "..", "..", "..", "master_crawler");
 
 // Craete master_crawler folder
 fs.readdir(dir, null, (err) => {
@@ -20,10 +20,10 @@ const crawler = async (query) => {
   try {
     const browser = await puppeteer.launch({
       headless: false,
-      args: ['--window-size:1720,1400'],
+      args: ["--window-size:1720,1400"],
     });
     await browser.userAgent(
-      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36'
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36"
     );
     let page = await browser.newPage();
     await page.setViewport({
@@ -32,7 +32,7 @@ const crawler = async (query) => {
     });
     await installMouseHelper(page);
     await page.goto(`http://115.22.68.60/master/crawl/index.jsp?pre=${query}`, {
-      waitUntil: 'networkidle0',
+      waitUntil: "networkidle0",
     });
 
     // 물리적으로 버튼을 누름니다.
@@ -57,10 +57,10 @@ const crawler = async (query) => {
     // pdf parsing
     const pdfs = await page.evaluate(() => {
       const result = [];
-      Array.from(document.querySelectorAll('tbody tr')).map((v, idx) => {
-        const pdfLink = v.querySelector('td:nth-child(5) a').href;
-        const pn = v.querySelector('.pname').textContent;
-        let mf = v.querySelector('#mfr').textContent.split('/');
+      Array.from(document.querySelectorAll("tbody tr")).map((v, idx) => {
+        const pdfLink = v.querySelector("td:nth-child(5) a").href;
+        const pn = v.querySelector(".pname").textContent;
+        let mf = v.querySelector("#mfr").textContent.split("/");
 
         if (mf[1]) {
           mf = `${mf[0].trim()} ${mf[1].trim()}`;
@@ -78,19 +78,19 @@ const crawler = async (query) => {
 
       const isMatched = await comparePartNumber(browser, v.pn);
 
-      if (v.link.includes('.pdf') || v.link.includes('.PDF')) {
+      if (v.link.includes(".pdf") || v.link.includes(".PDF")) {
         axios({
-          method: 'GET',
+          method: "GET",
           url: v.link,
-          responseType: 'arraybuffer',
+          responseType: "arraybuffer",
         })
           .then((res) => {
             let pn = v.pn;
-            if (pn.includes('/')) {
-              pn = `변경${v.pn.split('/')[0]}`;
+            if (pn.includes("/")) {
+              pn = `변경${v.pn.split("/")[0]}`;
             }
-            if (pn.includes('.')) {
-              pn = `변경${v.pn.split('.')[0]}`;
+            if (pn.includes(".")) {
+              pn = `변경${v.pn.split(".")[0]}`;
             }
             if (isMatched) {
               console.log(`다운로드: ${pn}/${v.mf}, 인덱스: ${idx + 1}, 마지막 인덱스: ${pdfs.length}`);
@@ -101,9 +101,9 @@ const crawler = async (query) => {
             }
           })
           .catch((error) => {
-            console.log('@@@@@@@@@  ERROR @@@@@@@@@');
+            console.log("@@@@@@@@@  ERROR @@@@@@@@@");
             console.log(error);
-            console.log('pn : ', v.pn);
+            console.log("pn : ", v.pn);
           });
       } else {
         fs.writeFileSync(`${dir}/${v.mf}/${pn}.txt`, v.link);
@@ -114,15 +114,15 @@ const crawler = async (query) => {
       }
     }
 
-    console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-    console.log('@                                                                                      @');
-    console.log('@                    다운로드가 끝났습니다. 아래 공지를 학인해주세요                   @');
-    console.log('@                                                                                      @');
+    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+    console.log("@                                                                                      @");
+    console.log("@                    다운로드가 끝났습니다. 아래 공지를 학인해주세요                   @");
+    console.log("@                                                                                      @");
     console.log('@        1. "변경" or "존재"라고 파트넘버 앞에 붙어 있다면 확인 후 삭제해주세요.       @');
-    console.log('@ 2. .txt 파일로 저장된 경우 pdf파일이 존재하지 않는 경로입니다. 확인 후 삭제해주세요. @');
-    console.log('@                                                                                      @');
-    console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-    console.log('10초 후 종료합니다.');
+    console.log("@ 2. .txt 파일로 저장된 경우 pdf파일이 존재하지 않는 경로입니다. 확인 후 삭제해주세요. @");
+    console.log("@                                                                                      @");
+    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+    console.log("10초 후 종료합니다.");
     await page.waitForTimeout(100000);
     await page.close();
     await browser.close();
@@ -139,10 +139,10 @@ async function comparePartNumber(browser, pn) {
 
   const isMatched = await page2.evaluate(
     (pn) => {
-      if (!document.querySelector('#cell10 td:nth-child(2) a')) {
+      if (!document.querySelector("#cell10 td:nth-child(2) a")) {
         return false;
       }
-      const mostMatchedPn = document.querySelector('#cell10 td:nth-child(2) a').textContent.trim();
+      const mostMatchedPn = document.querySelector("#cell10 td:nth-child(2) a").textContent.trim();
       if (pn === mostMatchedPn) {
         return true;
       } else {
@@ -160,11 +160,11 @@ async function comparePartNumber(browser, pn) {
 // 제조사 리스트를 분석,배열로 반환
 async function parseManufactureList(page) {
   const list = await page.evaluate(() => {
-    const name = Array.from(document.querySelectorAll('#mfr')).map((v) => {
+    const name = Array.from(document.querySelectorAll("#mfr")).map((v) => {
       return v.textContent && v.textContent;
     });
     const result = name.map((v) => {
-      const mf = v.split('/');
+      const mf = v.split("/");
       if (!mf[1]) {
         return mf[0];
       }
@@ -182,11 +182,11 @@ const rl = readline.createInterface({
 
 function getInput() {
   let input;
-  console.log('Query를 입력하세요');
-  rl.on('line', (line) => {
+  console.log("Query를 입력하세요");
+  rl.on("line", (line) => {
     input = line;
     rl.close();
-  }).on('close', () => {
+  }).on("close", () => {
     crawler(input);
   });
 }

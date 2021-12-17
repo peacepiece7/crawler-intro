@@ -65,7 +65,6 @@ const crawler = async (siteNames) => {
           }
           return null;
         });
-        console.log("part number :", partNumber);
 
         if (partNumber) {
           const text = `${FilePath}\\${partNumber}.tgz`;
@@ -94,13 +93,6 @@ const crawler = async (siteNames) => {
 };
 
 // * 제조사 풀 네임을 여기에 입력
-const siteNames = ["Keystone Electronics Corp. [KEYSTONE]^Keystone"];
+const siteNames = ["Schneider Electric [SCHNEIDER]^Schneider"];
 
 crawler(siteNames);
-
-// Weidmuller [WEIDMULLER]^Weidmuller
-// WAGO Kontakttechnik GmbH & Co. KG [WAGO]^WAGO
-// HARTING Technology Group [HARTING]^HARTING
-// Keystone Electronics Corp. [KEYSTONE]^Keystone
-// Schneider Electric [SCHNEIDER]^Schneider
-// TDK Electronics [TDK]^TDK
