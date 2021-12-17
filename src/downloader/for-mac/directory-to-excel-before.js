@@ -1,4 +1,4 @@
-directory - to - excel - after; //! TEST FILE USED ONLY ON MAC
+//! TEST FILE USED ONLY ON MAC
 
 const xl = require("excel4node");
 const path = require("path");
