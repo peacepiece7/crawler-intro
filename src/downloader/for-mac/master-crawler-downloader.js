@@ -37,10 +37,6 @@ const crawler = async (query) => {
 
     // 물리적으로 버튼을 누름니다.
     // 화면 사이즈에 따라 변경이 필요합니다.
-    await page.mouse.move(220, 125);
-    await page.waitForTimeout(3000);
-    await page.mouse.click(220, 125);
-    await page.waitForTimeout(1000);
 
     const manufactureList = await parseManufactureList(page);
     const filteredManufactureList = manufactureList.filter((val, idx) => manufactureList.indexOf(val) === idx);

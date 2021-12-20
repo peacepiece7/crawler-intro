@@ -143,6 +143,20 @@ const crawler = async (providers) => {
 
 // 검색할 내용을 입력하세요
 
-const siteNames = ["schneider", "delta", "diodes in", "fluke", "grayhill", "honeywell s", "hammond"];
+const siteNames = [
+  "Toshiba",
+  "Renesas",
+  "Tripp Li",
+  "switchcraft",
+  "infineon Tec",
+  "atmel c",
+  "panasonic s",
+  "panasonic b",
+  "phihong",
+  "littelfuse",
+  "on semi",
+  "ebm-papst",
+  "tdk",
+];
 
 crawler(siteNames);

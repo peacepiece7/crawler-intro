@@ -93,14 +93,14 @@ const crawler = async (query) => {
           .then((res) => {
             let pn = v.pn;
             if (pn.includes("/")) {
-              pn = `변경${v.pn.split("/")[0]}`;
+              pn = `modified${v.pn.split("/")[0]}`;
             }
             if (pn.includes(".")) {
-              pn = `변경${v.pn.split(".")[0]}`;
+              pn = `modified${v.pn.split(".")[0]}`;
             }
             if (isMatched) {
               console.log(`다운로드: ${pn}/${v.mf}, 인덱스: ${idx + 1}, 마지막 인덱스: ${pdfs.length}`);
-              fs.writeFileSync(`${dir}/${v.mf}/존재${pn}.pdf`, res.data);
+              fs.writeFileSync(`${dir}/${v.mf}/exsisting${pn}.pdf`, res.data);
             } else {
               console.log(`다운로드: ${v.pn}/${v.mf}, 인덱스: ${idx + 1}, 마지막 인덱스: ${pdfs.length}`);
               fs.writeFileSync(`${dir}/${v.mf}/${pn}.pdf`, res.data);
@@ -124,7 +124,7 @@ const crawler = async (query) => {
     console.log("@                                                                                      @");
     console.log("@                    다운로드가 끝났습니다. 아래 공지를 학인해주세요                   @");
     console.log("@                                                                                      @");
-    console.log('@        1. "변경" or "존재"라고 파트넘버 앞에 붙어 있다면 확인 후 진행해주세요.       @');
+    console.log('@   1. "modified" or "exsisting"라고 파트넘버 앞에 붙어 있다면 확인 후 진행해주세요.   @');
     console.log("@ 2. .txt 파일로 저장된 경우 pdf파일이 존재하지 않는 경로입니다. 확인 후 진행해주세요. @");
     console.log("@                                                                                      @");
     console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");

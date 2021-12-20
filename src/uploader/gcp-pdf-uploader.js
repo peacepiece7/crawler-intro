@@ -120,36 +120,88 @@ const crawler = async (options) => {
 
 const option = [
   {
-    folder: "IDEC",
-    keyword: "IDEC Corporation [IDEC]^1452",
+    folder: "Renesas Electronics",
+    keyword: "Renesas Technology Corp [RENESAS]^233",
   },
   {
-    folder: "APC by Schneider Electric",
-    keyword: "Schneider Electric [SCHNEIDER]^1309",
+    folder: "Tripp Lite",
+    keyword: "Tripp Lite. All Rights Reserved [TRIPPLITE]^1008",
   },
   {
-    folder: "Delta Electronics",
-    keyword: "Delta Electronics, Inc. [DELTA]^248",
+    folder: "Renesas IDT",
+    keyword: "Renesas Technology Corp [RENESAS]^233",
   },
   {
-    folder: "Diodes Incorporated",
-    keyword: "Diodes Incorporated [DIODES]^41",
+    folder: "Toshiba",
+    keyword: "Toshiba Semiconductor [TOSHIBA]^163",
   },
   {
-    folder: "Fluke",
-    keyword: "Fluke Corporation [FLUKE]^1350",
+    folder: "TE Connectivity AMP",
+    keyword: "TE Connectivity Ltd [TEC]^1049",
   },
   {
-    folder: "Grayhill",
-    keyword: "Grayhill, Inc [GRAYHILL]^493",
+    folder: "Switchcraft",
+    keyword: "Switchcraft, Inc. [SWITCH]^818",
   },
   {
-    folder: "Honeywell",
-    keyword: "Honeywell Solid State Electronics Center [HONEYWELL]^272",
+    folder: "TE Connectivity",
+    keyword: "TE Connectivity Ltd [TEC]^1049",
   },
   {
-    folder: "Hammond Manufacturing",
-    keyword: "Hammond Manufacturing Ltd. [HAMMOND]^968",
+    folder: "Infineon IR",
+    keyword: "Infineon Technologies AG [INFINEON]^211",
+  },
+  {
+    folder: "Microchip Technology Atmel",
+    keyword: "ATMEL Corporation [ATMEL]^20",
+  },
+  {
+    folder: "Omron Automation and Safety",
+    keyword: "Omron Electronics LLC [OMRON]^250",
+  },
+  {
+    folder: "panasonic",
+    keyword: "Panasonic Semiconductor [PANASONIC]^115",
+  },
+  {
+    folder: "Panasonic Industrial Devices",
+    keyword: "Panasonic Semiconductor [PANASONIC]^115",
+  },
+  {
+    folder: "Phihong",
+    keyword: "Phihong USA Inc. [PHIHONG]^650",
+  },
+  {
+    folder: "Microchip Technology",
+    keyword: "Microchip Technology [MICROCHIP]^97",
+  },
+  {
+    folder: "Omron Electronics",
+    keyword: "Omron Electronics LLC [OMRON]^250",
+  },
+  {
+    folder: "Littelfuse",
+    keyword: "Littelfuse [LITTELFUSE]^87",
+  },
+  {
+    folder: "Micro Commercial Components (MCC)",
+    keyword: "Micro Commercial Components [MCC]^94",
+  },
+  {
+    folder: "onsemi Fairchild",
+    keyword: "ON Semiconductor [ONSEMI]^112",
+  },
+  {
+    folder: "Cosel",
+    keyword: "COSEL CO., LTD. [COSEL]^1453",
+  },
+  {
+    folder: "ebm-papst",
+    keyword: "ebm-papst [EBMPAPST]^866",
+  },
+  {
+    folder: "EPCOS TDK",
+    keyword: "TDK Electronics [TDK]^252",
   },
 ];
 
