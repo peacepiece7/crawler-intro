@@ -1,6 +1,5 @@
 const path = require("path");
 const fs = require("fs");
-const e = require("express");
 
 const folderDir = path.join(__dirname, "..", "..", "..", "master_crawler");
 
